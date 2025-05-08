@@ -60,7 +60,8 @@ body {
     box-shadow: 0 8px 32px rgba(24, 21, 58, 0.08), 0 1.5px 4px rgba(24, 21, 58, 0.04);
     padding: 40px 32px;
     margin-bottom: 32px;
-    max-width: 600px;
+    max-width: 80vw;
+    width: 80vw;
     margin-left: auto;
     margin-right: auto;
     overflow-x: hidden;
@@ -205,6 +206,14 @@ textarea.form-control {
     .logo {
         height: 36px;
         margin-right: 10px;
+    }
+}
+
+@media (max-width: 900px) {
+    .card {
+        max-width: 98vw;
+        width: 98vw;
+        padding: 12px 2vw;
     }
 }
 
