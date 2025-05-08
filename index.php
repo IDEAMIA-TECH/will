@@ -256,52 +256,6 @@ $fecha_hoy = date('Y-m-d');
                         </div>
                     </div>
 
-                    <?php
-                    // Obtener secciones y preguntas
-                    $step = 6;
-                    try {
-                        $stmt = $conn->query("SELECT * FROM secciones ORDER BY id");
-                        while ($seccion = $stmt->fetch()) {
-                            echo '<div class="wizard-step" data-step="' . $step . '">';
-                            echo '<div class="diagnostic-section">';
-                            echo '<h2 class="section-title">' . htmlspecialchars($seccion['nombre']) . '</h2>';
-                            echo '<p>' . htmlspecialchars($seccion['descripcion']) . '</p>';
-                            
-                            // Obtener preguntas de esta sección
-                            $stmtPreguntas = $conn->prepare("SELECT * FROM preguntas WHERE seccion_id = ? ORDER BY orden");
-                            $stmtPreguntas->execute([$seccion['id']]);
-                            
-                            echo '<table class="table">';
-                            echo '<thead><tr><th>Pregunta</th><th>Calificación</th><th>Observaciones</th></tr></thead>';
-                            echo '<tbody>';
-                            
-                            while ($pregunta = $stmtPreguntas->fetch()) {
-                                echo '<tr>';
-                                echo '<td>' . htmlspecialchars($pregunta['texto_pregunta']) . '</td>';
-                                echo '<td>';
-                                echo '<div class="rating">';
-                                for ($i = 1; $i <= 5; $i++) {
-                                    echo '<label class="rating-item">';
-                                    echo '<input type="radio" name="calificacion_' . $pregunta['id'] . '" value="' . $i . '" required>';
-                                    echo $i;
-                                    echo '</label>';
-                                }
-                                echo '</div>';
-                                echo '</td>';
-                                echo '<td><textarea name="observacion_' . $pregunta['id'] . '" class="form-control" rows="2"></textarea></td>';
-                                echo '</tr>';
-                            }
-                            
-                            echo '</tbody></table>';
-                            echo '</div>';
-                            echo '</div>';
-                            $step++;
-                        }
-                    } catch (PDOException $e) {
-                        echo '<div class="message message-error">Error al cargar el formulario: ' . $e->getMessage() . '</div>';
-                    }
-                    ?>
-
                     <div class="wizard-nav">
                         <button type="button" class="btn btn-primary" id="prevBtn" onclick="nextPrev(-1)">Anterior</button>
                         <button type="button" class="btn btn-primary" id="nextBtn" onclick="nextPrev(1)">Siguiente</button>
