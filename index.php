@@ -17,6 +17,10 @@ $fecha_hoy = date('Y-m-d');
         .wizard-progress { display: flex; justify-content: center; margin-bottom: 24px; gap: 8px; }
         .wizard-dot { width: 14px; height: 14px; border-radius: 50%; background: #e0e0e0; transition: background 0.2s; }
         .wizard-dot.active { background: var(--primary-color); }
+        .yesno-group { display: flex; gap: 24px; align-items: center; }
+        .yesno-label { margin-right: 8px; font-weight: 500; }
+        .rating-group { display: flex; gap: 10px; align-items: center; }
+        .rating-label { margin-right: 8px; font-weight: 500; }
     </style>
 </head>
 <body>
@@ -34,8 +38,163 @@ $fecha_hoy = date('Y-m-d');
             <div class="card-body">
                 <div class="wizard-progress" id="wizardProgress"></div>
                 <form id="diagnosticoForm" method="POST" action="procesar_diagnostico.php">
-                    <!-- Paso 1: Información General -->
+                    <!-- Paso 1: MOMENTO EMPRESARIAL -->
                     <div class="wizard-step active" data-step="1">
+                        <div class="diagnostic-section">
+                            <h2 class="section-title">Momento Empresarial</h2>
+                            <div class="form-group">
+                                <label>¿La declaración de la Visión es coherente con la misión de su organización?</label>
+                                <div class="yesno-group">
+                                    <label class="yesno-label"><input type="radio" name="momento_1" value="1" required> Sí</label>
+                                    <label class="yesno-label"><input type="radio" name="momento_1" value="0"> No</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>¿Dedica tiempo para analizar información de alto impacto al negocio?</label>
+                                <div class="yesno-group">
+                                    <label class="yesno-label"><input type="radio" name="momento_2" value="1" required> Sí</label>
+                                    <label class="yesno-label"><input type="radio" name="momento_2" value="0"> No</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>¿Desarrolla reuniones estratégicas con sus líderes de área?</label>
+                                <div class="yesno-group">
+                                    <label class="yesno-label"><input type="radio" name="momento_3" value="1" required> Sí</label>
+                                    <label class="yesno-label"><input type="radio" name="momento_3" value="0"> No</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>¿La toma de decisión es oportuna?</label>
+                                <div class="yesno-group">
+                                    <label class="yesno-label"><input type="radio" name="momento_4" value="1" required> Sí</label>
+                                    <label class="yesno-label"><input type="radio" name="momento_4" value="0"> No</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>¿Sus líderes de área conocen hacia dónde se dirige la organización?</label>
+                                <div class="yesno-group">
+                                    <label class="yesno-label"><input type="radio" name="momento_5" value="1" required> Sí</label>
+                                    <label class="yesno-label"><input type="radio" name="momento_5" value="0"> No</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>¿Desarrolla objetivos desde las siguientes perspectivas? (Administrativa, Comercial, Procesos, Capital Humano)</label>
+                                <div class="yesno-group">
+                                    <label class="yesno-label"><input type="radio" name="momento_6" value="1" required> Sí</label>
+                                    <label class="yesno-label"><input type="radio" name="momento_6" value="0"> No</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>¿Cuenta con plan de...? (Administrativo, Comercial, Operativo, Capital Humano)</label>
+                                <div class="yesno-group">
+                                    <label class="yesno-label"><input type="radio" name="momento_7" value="1" required> Sí</label>
+                                    <label class="yesno-label"><input type="radio" name="momento_7" value="0"> No</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>¿Actualmente tiene documentado algún plan organizacional?</label>
+                                <div class="yesno-group">
+                                    <label class="yesno-label"><input type="radio" name="momento_8" value="1" required> Sí</label>
+                                    <label class="yesno-label"><input type="radio" name="momento_8" value="0"> No</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>¿Conoce el % de cumplimiento respecto al plan que actualmente implementa la organización?</label>
+                                <div class="yesno-group">
+                                    <label class="yesno-label"><input type="radio" name="momento_9" value="1" required> Sí</label>
+                                    <label class="yesno-label"><input type="radio" name="momento_9" value="0"> No</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Paso 2: ÁREAS DE ACCIÓN -->
+                    <div class="wizard-step" data-step="2">
+                        <div class="diagnostic-section">
+                            <h2 class="section-title">ÁREAS DE ACCIÓN</h2>
+                            <?php
+                            $areas_preguntas = [
+                                '¿La Alta Dirección promueve la visión y misión de la organización?',
+                                '¿La Alta Dirección promueve la cultura organizacional?',
+                                '¿La Alta Dirección promueve la innovación?',
+                                '¿La Alta Dirección promueve la mejora continua?',
+                                '¿La Alta Dirección promueve la toma de decisiones basada en datos?',
+                                '¿La Alta Dirección promueve la comunicación efectiva?',
+                                '¿La Alta Dirección promueve el trabajo en equipo?',
+                                '¿La Alta Dirección promueve el desarrollo del talento?',
+                                '¿La Alta Dirección promueve la responsabilidad social?',
+                                '¿La Alta Dirección promueve la ética y valores?'
+                            ];
+                            foreach ($areas_preguntas as $i => $pregunta) {
+                                $num = $i + 1;
+                                echo '<div class="form-group">';
+                                echo '<label>' . htmlspecialchars($pregunta) . '</label>';
+                                echo '<div class="rating-group">';
+                                for ($r = 1; $r <= 5; $r++) {
+                                    echo '<label class="rating-label"><input type="radio" name="area_accion_' . $num . '" value="' . $r . '" required> ' . $r . '</label>';
+                                }
+                                echo '</div>';
+                                echo '<textarea name="comentario_area_accion_' . $num . '" class="form-control" rows="2" placeholder="Comentarios (opcional)"></textarea>';
+                                echo '</div>';
+                            }
+                            ?>
+                        </div>
+                    </div>
+
+                    <!-- Paso 3: PITS CALIDAD & PRODUCTIVIDAD -->
+                    <div class="wizard-step" data-step="3">
+                        <div class="diagnostic-section">
+                            <h2 class="section-title">PITS CALIDAD & PRODUCTIVIDAD</h2>
+                            <?php
+                            $pits_preguntas = [
+                                '¿El área cuenta con indicadores de calidad y productividad definidos?',
+                                '¿Se da seguimiento periódico a los indicadores de calidad y productividad?',
+                                '¿Se implementan acciones de mejora cuando los indicadores no se cumplen?',
+                                '¿El personal está capacitado para cumplir con los estándares de calidad y productividad?'
+                            ];
+                            foreach ($pits_preguntas as $i => $pregunta) {
+                                $num = $i + 1;
+                                echo '<div class="form-group">';
+                                echo '<label>' . htmlspecialchars($pregunta) . '</label>';
+                                echo '<div class="rating-group">';
+                                for ($r = 1; $r <= 4; $r++) {
+                                    echo '<label class="rating-label"><input type="radio" name="pits_' . $num . '" value="' . $r . '" required> ' . $r . '</label>';
+                                }
+                                echo '</div>';
+                                echo '<textarea name="comentario_pits_' . $num . '" class="form-control" rows="2" placeholder="Comentarios (opcional)"></textarea>';
+                                echo '</div>';
+                            }
+                            ?>
+                        </div>
+                    </div>
+
+                    <!-- Paso 4: PITS MAXIMIZACIÓN DE CAPACIDADES -->
+                    <div class="wizard-step" data-step="4">
+                        <div class="diagnostic-section">
+                            <h2 class="section-title">PITS MAXIMIZACIÓN DE CAPACIDADES</h2>
+                            <?php
+                            $pits_max_preguntas = [
+                                '¿El personal cuenta con las competencias necesarias para su puesto?',
+                                '¿Se realizan capacitaciones periódicas para el desarrollo de habilidades?',
+                                '¿Se promueve la polivalencia y multifuncionalidad del personal?',
+                                '¿Existen programas de reconocimiento al desempeño y desarrollo?' 
+                            ];
+                            foreach ($pits_max_preguntas as $i => $pregunta) {
+                                $num = $i + 1;
+                                echo '<div class="form-group">';
+                                echo '<label>' . htmlspecialchars($pregunta) . '</label>';
+                                echo '<div class="yesno-group">';
+                                echo '<label class="yesno-label"><input type="radio" name="pits_max_' . $num . '" value="1" required> Sí</label>';
+                                echo '<label class="yesno-label"><input type="radio" name="pits_max_' . $num . '" value="0"> No</label>';
+                                echo '</div>';
+                                echo '</div>';
+                            }
+                            ?>
+                        </div>
+                    </div>
+
+                    <!-- Paso 5: Información General -->
+                    <div class="wizard-step" data-step="5">
                         <div class="diagnostic-section">
                             <h2 class="section-title">Información General</h2>
                             <div class="form-group">
@@ -65,7 +224,7 @@ $fecha_hoy = date('Y-m-d');
 
                     <?php
                     // Obtener secciones y preguntas
-                    $step = 2;
+                    $step = 6;
                     try {
                         $stmt = $conn->query("SELECT * FROM secciones ORDER BY id");
                         while ($seccion = $stmt->fetch()) {
