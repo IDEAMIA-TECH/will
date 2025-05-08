@@ -1,5 +1,6 @@
 <?php
 require_once 'config/database.php';
+$fecha_hoy = date('Y-m-d');
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -22,7 +23,7 @@ require_once 'config/database.php';
     <header class="site-header">
         <div class="header-content">
             <img src="assets/img/image.png" alt="Ralktech Logo" class="logo">
-            <span class="brand-title">RALKTECH</span>
+            
         </div>
     </header>
     <div class="container">
@@ -39,7 +40,7 @@ require_once 'config/database.php';
                             <h2 class="section-title">Información General</h2>
                             <div class="form-group">
                                 <label for="fecha_diagnostico">Fecha de Diagnóstico</label>
-                                <input type="date" id="fecha_diagnostico" name="fecha_diagnostico" class="form-control" required>
+                                <input type="date" id="fecha_diagnostico" name="fecha_diagnostico" class="form-control" required value="<?php echo $fecha_hoy; ?>">
                             </div>
                             <div class="form-group">
                                 <label for="nombre_cliente">Nombre del Cliente</label>
