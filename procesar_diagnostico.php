@@ -51,6 +51,25 @@ try {
         }
     }
 
+    // Procesar switches adicionales de Momento Empresarial
+    $stmt_switch = $conn->prepare("
+        INSERT INTO respuestas (
+            diagnostico_id, pregunta_id, calificacion, observaciones
+        ) VALUES (?, ?, ?, ?)
+    ");
+    for ($i = 1; $i <= 10; $i++) {
+        $key = 'momento_switch_' . $i;
+        $valor = isset($_POST[$key]) ? 1 : 0;
+        $stmt_switch->execute([
+            $diagnostico_id,
+            'M1S_' . $i,
+            $valor,
+            null
+        ]);
+        $puntuacion_total += $valor;
+        $total_preguntas++;
+    }
+
     // Procesar ÁREAS DE ACCIÓN
     $stmt_area = $conn->prepare("
         INSERT INTO respuestas (

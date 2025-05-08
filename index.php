@@ -21,6 +21,14 @@ $fecha_hoy = date('Y-m-d');
         .yesno-label { margin-right: 8px; font-weight: 500; }
         .rating-group { display: flex; gap: 10px; align-items: center; }
         .rating-label { margin-right: 8px; font-weight: 500; }
+        .switch-group { display: flex; align-items: center; gap: 18px; margin-bottom: 18px; }
+        .switch-label { font-weight: 500; margin-right: 12px; }
+        .switch { position: relative; display: inline-block; width: 48px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #ccc; transition: .4s; border-radius: 24px; }
+        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 2px; bottom: 2px; background: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background: var(--primary-color); }
+        input:checked + .slider:before { transform: translateX(24px); }
     </style>
 </head>
 <body>
@@ -105,6 +113,32 @@ $fecha_hoy = date('Y-m-d');
                                     <label class="yesno-label"><input type="radio" name="momento_9" value="0"> No</label>
                                 </div>
                             </div>
+                            <!-- Switches adicionales -->
+                            <?php
+                            $switch_preguntas = [
+                                '¿La empresa cuenta con un sistema de gestión documental digitalizado?',
+                                '¿Se utilizan tableros de control para el seguimiento de indicadores?',
+                                '¿Se realizan reuniones periódicas de seguimiento de resultados?',
+                                '¿La empresa cuenta con un plan de continuidad de negocio?',
+                                '¿Se promueve el uso de herramientas tecnológicas para la colaboración?',
+                                '¿Existe un programa de bienestar para los empleados?',
+                                '¿La empresa cuenta con certificaciones de calidad vigentes?',
+                                '¿Se realiza evaluación de desempeño al personal?',
+                                '¿Se cuenta con un programa de capacitación continua?',
+                                '¿La empresa promueve la innovación en sus procesos?'
+                            ];
+                            foreach ($switch_preguntas as $i => $pregunta) {
+                                $num = $i + 1;
+                                echo '<div class="switch-group">';
+                                echo '<span class="switch-label">' . htmlspecialchars($pregunta) . '</span>';
+                                echo '<label class="switch">';
+                                echo '<input type="checkbox" name="momento_switch_' . $num . '" value="1">';
+                                echo '<span class="slider"></span>';
+                                echo '</label>';
+                                echo '<input type="hidden" name="momento_switch_' . $num . '_hidden" value="0">';
+                                echo '</div>';
+                            }
+                            ?>
                         </div>
                     </div>
 
