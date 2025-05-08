@@ -6,14 +6,22 @@ define('DB_NAME', 'ideamiadev_will');
 
 try {
     $conn = new PDO(
-        "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME,
+        "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8",
         DB_USER,
         DB_PASS,
-        array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'")
+        array(
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4"
+        )
     );
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch(PDOException $e) {
-    echo "Error de conexión: " . $e->getMessage();
+    // Mostrar mensaje de error más detallado
+    $error = "Error de conexión: " . $e->getMessage() . "\n";
+    $error .= "Host: " . DB_HOST . "\n";
+    $error .= "Usuario: " . DB_USER . "\n";
+    $error .= "Base de datos: " . DB_NAME . "\n";
+    echo $error;
     exit;
 }
 ?> 
