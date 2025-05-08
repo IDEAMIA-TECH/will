@@ -1,4 +1,5 @@
 <?php
+define('DB_HOST', 'localhost');
 define('DB_USER', 'ideamiadev_will');
 define('DB_PASS', 'a8Lb39FjCLi#rdk4');
 define('DB_NAME', 'ideamiadev_will');
