@@ -302,37 +302,6 @@ $fecha_hoy = date('Y-m-d');
                     }
                     ?>
 
-                    <!-- Último paso: Recomendaciones y Plan de Acción -->
-                    <div class="wizard-step" data-step="<?php echo $step; ?>">
-                        <div class="diagnostic-section">
-                            <h2 class="section-title">Recomendaciones y Plan de Acción</h2>
-                            <div class="form-group">
-                                <label for="observaciones_generales">Observaciones Generales</label>
-                                <textarea id="observaciones_generales" name="observaciones_generales" class="form-control" rows="4"></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label>Recomendaciones Prioritarias</label>
-                                <div id="recomendaciones">
-                                    <div class="recomendacion-item">
-                                        <input type="text" name="recomendaciones[]" class="form-control" placeholder="Recomendación 1" required>
-                                    </div>
-                                </div>
-                                <button type="button" class="btn btn-primary" onclick="agregarRecomendacion()">Agregar Recomendación</button>
-                            </div>
-                            <div class="form-group">
-                                <label>Plan de Acción</label>
-                                <div id="plan_accion">
-                                    <div class="plan-item">
-                                        <input type="text" name="acciones[]" class="form-control" placeholder="Acción" required>
-                                        <input type="text" name="responsables[]" class="form-control" placeholder="Responsable" required>
-                                        <input type="date" name="fechas[]" class="form-control" required>
-                                    </div>
-                                </div>
-                                <button type="button" class="btn btn-primary" onclick="agregarPlanAccion()">Agregar Acción</button>
-                            </div>
-                        </div>
-                    </div>
-
                     <div class="wizard-nav">
                         <button type="button" class="btn btn-primary" id="prevBtn" onclick="nextPrev(-1)">Anterior</button>
                         <button type="button" class="btn btn-primary" id="nextBtn" onclick="nextPrev(1)">Siguiente</button>
@@ -388,29 +357,6 @@ $fecha_hoy = date('Y-m-d');
         window.totalSteps = steps.length;
         showStep(0);
     });
-
-    function agregarRecomendacion() {
-        const container = document.getElementById('recomendaciones');
-        const count = container.children.length + 1;
-        const div = document.createElement('div');
-        div.className = 'recomendacion-item';
-        div.innerHTML = `
-            <input type="text" name="recomendaciones[]" class="form-control" placeholder="Recomendación ${count}" required>
-        `;
-        container.appendChild(div);
-    }
-
-    function agregarPlanAccion() {
-        const container = document.getElementById('plan_accion');
-        const div = document.createElement('div');
-        div.className = 'plan-item';
-        div.innerHTML = `
-            <input type="text" name="acciones[]" class="form-control" placeholder="Acción" required>
-            <input type="text" name="responsables[]" class="form-control" placeholder="Responsable" required>
-            <input type="date" name="fechas[]" class="form-control" required>
-        `;
-        container.appendChild(div);
-    }
     </script>
 </body>
 </html> 
