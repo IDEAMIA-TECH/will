@@ -9,6 +9,14 @@ require_once 'config/database.php';
     <title>Diagnóstico de Gestión Disruptiva</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/styles.css">
+    <style>
+        .wizard-step { display: none; }
+        .wizard-step.active { display: block; }
+        .wizard-nav { display: flex; justify-content: space-between; margin-top: 32px; }
+        .wizard-progress { display: flex; justify-content: center; margin-bottom: 24px; gap: 8px; }
+        .wizard-dot { width: 14px; height: 14px; border-radius: 50%; background: #e0e0e0; transition: background 0.2s; }
+        .wizard-dot.active { background: var(--primary-color); }
+    </style>
 </head>
 <body>
     <header class="site-header">
@@ -23,39 +31,44 @@ require_once 'config/database.php';
                 <h1 class="card-title">Diagnóstico de Gestión Disruptiva</h1>
             </div>
             <div class="card-body">
+                <div class="wizard-progress" id="wizardProgress"></div>
                 <form id="diagnosticoForm" method="POST" action="procesar_diagnostico.php">
-                    <!-- Información General -->
-                    <div class="diagnostic-section">
-                        <h2 class="section-title">Información General</h2>
-                        <div class="form-group">
-                            <label for="fecha_diagnostico">Fecha de Diagnóstico</label>
-                            <input type="date" id="fecha_diagnostico" name="fecha_diagnostico" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="nombre_cliente">Nombre del Cliente</label>
-                            <input type="text" id="nombre_cliente" name="nombre_cliente" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="industria">Industria</label>
-                            <input type="text" id="industria" name="industria" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="tamano_empresa">Tamaño de la Empresa</label>
-                            <select id="tamano_empresa" name="tamano_empresa" class="form-control" required>
-                                <option value="">Seleccione...</option>
-                                <option value="Micro">Micro (1-10 empleados)</option>
-                                <option value="Pequeña">Pequeña (11-50 empleados)</option>
-                                <option value="Mediana">Mediana (51-250 empleados)</option>
-                                <option value="Grande">Grande (251+ empleados)</option>
-                            </select>
+                    <!-- Paso 1: Información General -->
+                    <div class="wizard-step active" data-step="1">
+                        <div class="diagnostic-section">
+                            <h2 class="section-title">Información General</h2>
+                            <div class="form-group">
+                                <label for="fecha_diagnostico">Fecha de Diagnóstico</label>
+                                <input type="date" id="fecha_diagnostico" name="fecha_diagnostico" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="nombre_cliente">Nombre del Cliente</label>
+                                <input type="text" id="nombre_cliente" name="nombre_cliente" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="industria">Industria</label>
+                                <input type="text" id="industria" name="industria" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="tamano_empresa">Tamaño de la Empresa</label>
+                                <select id="tamano_empresa" name="tamano_empresa" class="form-control" required>
+                                    <option value="">Seleccione...</option>
+                                    <option value="Micro">Micro (1-10 empleados)</option>
+                                    <option value="Pequeña">Pequeña (11-50 empleados)</option>
+                                    <option value="Mediana">Mediana (51-250 empleados)</option>
+                                    <option value="Grande">Grande (251+ empleados)</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
 
                     <?php
                     // Obtener secciones y preguntas
+                    $step = 2;
                     try {
                         $stmt = $conn->query("SELECT * FROM secciones ORDER BY id");
                         while ($seccion = $stmt->fetch()) {
+                            echo '<div class="wizard-step" data-step="' . $step . '">';
                             echo '<div class="diagnostic-section">';
                             echo '<h2 class="section-title">' . htmlspecialchars($seccion['nombre']) . '</h2>';
                             echo '<p>' . htmlspecialchars($seccion['descripcion']) . '</p>';
@@ -87,45 +100,49 @@ require_once 'config/database.php';
                             
                             echo '</tbody></table>';
                             echo '</div>';
+                            echo '</div>';
+                            $step++;
                         }
                     } catch (PDOException $e) {
                         echo '<div class="message message-error">Error al cargar el formulario: ' . $e->getMessage() . '</div>';
                     }
                     ?>
 
-                    <!-- Recomendaciones y Plan de Acción -->
-                    <div class="diagnostic-section">
-                        <h2 class="section-title">Recomendaciones y Plan de Acción</h2>
-                        <div class="form-group">
-                            <label for="observaciones_generales">Observaciones Generales</label>
-                            <textarea id="observaciones_generales" name="observaciones_generales" class="form-control" rows="4"></textarea>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Recomendaciones Prioritarias</label>
-                            <div id="recomendaciones">
-                                <div class="recomendacion-item">
-                                    <input type="text" name="recomendaciones[]" class="form-control" placeholder="Recomendación 1" required>
-                                </div>
+                    <!-- Último paso: Recomendaciones y Plan de Acción -->
+                    <div class="wizard-step" data-step="<?php echo $step; ?>">
+                        <div class="diagnostic-section">
+                            <h2 class="section-title">Recomendaciones y Plan de Acción</h2>
+                            <div class="form-group">
+                                <label for="observaciones_generales">Observaciones Generales</label>
+                                <textarea id="observaciones_generales" name="observaciones_generales" class="form-control" rows="4"></textarea>
                             </div>
-                            <button type="button" class="btn btn-primary" onclick="agregarRecomendacion()">Agregar Recomendación</button>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Plan de Acción</label>
-                            <div id="plan_accion">
-                                <div class="plan-item">
-                                    <input type="text" name="acciones[]" class="form-control" placeholder="Acción" required>
-                                    <input type="text" name="responsables[]" class="form-control" placeholder="Responsable" required>
-                                    <input type="date" name="fechas[]" class="form-control" required>
+                            <div class="form-group">
+                                <label>Recomendaciones Prioritarias</label>
+                                <div id="recomendaciones">
+                                    <div class="recomendacion-item">
+                                        <input type="text" name="recomendaciones[]" class="form-control" placeholder="Recomendación 1" required>
+                                    </div>
                                 </div>
+                                <button type="button" class="btn btn-primary" onclick="agregarRecomendacion()">Agregar Recomendación</button>
                             </div>
-                            <button type="button" class="btn btn-primary" onclick="agregarPlanAccion()">Agregar Acción</button>
+                            <div class="form-group">
+                                <label>Plan de Acción</label>
+                                <div id="plan_accion">
+                                    <div class="plan-item">
+                                        <input type="text" name="acciones[]" class="form-control" placeholder="Acción" required>
+                                        <input type="text" name="responsables[]" class="form-control" placeholder="Responsable" required>
+                                        <input type="date" name="fechas[]" class="form-control" required>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-primary" onclick="agregarPlanAccion()">Agregar Acción</button>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="text-center" style="margin-top: 20px;">
-                        <button type="submit" class="btn btn-primary">Guardar Diagnóstico</button>
+                    <div class="wizard-nav">
+                        <button type="button" class="btn btn-primary" id="prevBtn" onclick="nextPrev(-1)">Anterior</button>
+                        <button type="button" class="btn btn-primary" id="nextBtn" onclick="nextPrev(1)">Siguiente</button>
+                        <button type="submit" class="btn btn-primary" id="submitBtn" style="display:none;">Guardar Diagnóstico</button>
                     </div>
                 </form>
             </div>
@@ -133,6 +150,51 @@ require_once 'config/database.php';
     </div>
 
     <script>
+    // Wizard logic
+    let currentStep = 0;
+    const steps = document.querySelectorAll('.wizard-step');
+    const progress = document.getElementById('wizardProgress');
+    let totalSteps = steps.length;
+
+    function showStep(n) {
+        steps.forEach((step, i) => {
+            step.classList.toggle('active', i === n);
+        });
+        // Progress dots
+        progress.innerHTML = '';
+        for (let i = 0; i < totalSteps; i++) {
+            progress.innerHTML += `<span class="wizard-dot${i === n ? ' active' : ''}"></span>`;
+        }
+        // Buttons
+        document.getElementById('prevBtn').style.display = n === 0 ? 'none' : '';
+        document.getElementById('nextBtn').style.display = n === totalSteps - 1 ? 'none' : '';
+        document.getElementById('submitBtn').style.display = n === totalSteps - 1 ? '' : 'none';
+    }
+
+    function nextPrev(n) {
+        // Simple validation: check required fields in current step
+        const currentFields = steps[currentStep].querySelectorAll('input, select, textarea');
+        for (let field of currentFields) {
+            if (field.hasAttribute('required') && !field.value) {
+                field.focus();
+                field.classList.add('error');
+                setTimeout(() => field.classList.remove('error'), 1200);
+                return;
+            }
+        }
+        currentStep += n;
+        if (currentStep < 0) currentStep = 0;
+        if (currentStep >= totalSteps) currentStep = totalSteps - 1;
+        showStep(currentStep);
+    }
+
+    // Inicializar wizard
+    document.addEventListener('DOMContentLoaded', function() {
+        window.steps = document.querySelectorAll('.wizard-step');
+        window.totalSteps = steps.length;
+        showStep(0);
+    });
+
     function agregarRecomendacion() {
         const container = document.getElementById('recomendaciones');
         const count = container.children.length + 1;
