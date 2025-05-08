@@ -14,29 +14,169 @@ try {
         mostrarMensaje("Conexión a la base de datos establecida correctamente.");
     }
 
-    // Leer el archivo SQL
-    $sql = file_get_contents('database.sql');
-    if (!$sql) {
-        throw new Exception("No se pudo leer el archivo database.sql");
-    }
-    mostrarMensaje("Archivo SQL leído correctamente.");
+    // Crear tablas una por una
+    $queries = [
+        // Tabla secciones
+        "CREATE TABLE IF NOT EXISTS secciones (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            nombre VARCHAR(100) NOT NULL,
+            descripcion TEXT,
+            puntuacion_maxima INT DEFAULT 20,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )",
+        
+        // Tabla preguntas
+        "CREATE TABLE IF NOT EXISTS preguntas (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            seccion_id INT,
+            texto_pregunta TEXT NOT NULL,
+            orden INT NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (seccion_id) REFERENCES secciones(id)
+        )",
+        
+        // Tabla diagnosticos
+        "CREATE TABLE IF NOT EXISTS diagnosticos (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            fecha_diagnostico DATE NOT NULL,
+            nombre_cliente VARCHAR(255) NOT NULL,
+            industria VARCHAR(100),
+            tamano_empresa VARCHAR(50),
+            puntuacion_total INT,
+            porcentaje_implementacion DECIMAL(5,2),
+            observaciones_generales TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        )",
+        
+        // Tabla respuestas
+        "CREATE TABLE IF NOT EXISTS respuestas (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            diagnostico_id INT,
+            pregunta_id INT,
+            calificacion INT CHECK (calificacion BETWEEN 1 AND 5),
+            observaciones TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (diagnostico_id) REFERENCES diagnosticos(id),
+            FOREIGN KEY (pregunta_id) REFERENCES preguntas(id)
+        )",
+        
+        // Tabla recomendaciones
+        "CREATE TABLE IF NOT EXISTS recomendaciones (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            diagnostico_id INT,
+            texto_recomendacion TEXT NOT NULL,
+            prioridad INT CHECK (prioridad BETWEEN 1 AND 3),
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (diagnostico_id) REFERENCES diagnosticos(id)
+        )",
+        
+        // Tabla plan_accion
+        "CREATE TABLE IF NOT EXISTS plan_accion (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            diagnostico_id INT,
+            accion TEXT NOT NULL,
+            responsable VARCHAR(255),
+            fecha_limite DATE,
+            estado VARCHAR(50),
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            FOREIGN KEY (diagnostico_id) REFERENCES diagnosticos(id)
+        )"
+    ];
 
-    // Dividir el SQL en consultas individuales
-    $queries = array_filter(array_map('trim', explode(';', $sql)));
-    
-    // Ejecutar cada consulta por separado
+    // Ejecutar cada consulta de creación de tabla
     foreach ($queries as $query) {
-        if (!empty($query)) {
-            try {
-                $conn->exec($query);
-                mostrarMensaje("Consulta ejecutada: " . substr($query, 0, 50) . "...");
-            } catch (PDOException $e) {
-                mostrarMensaje("Error en consulta: " . substr($query, 0, 50) . "...<br>Error: " . $e->getMessage(), 'error');
-            }
+        try {
+            $conn->exec($query);
+            mostrarMensaje("Tabla creada exitosamente: " . substr($query, 17, 20) . "...");
+        } catch (PDOException $e) {
+            mostrarMensaje("Error al crear tabla: " . $e->getMessage(), 'error');
         }
     }
 
-    // Verificar las tablas creadas
+    // Insertar datos iniciales
+    try {
+        // Insertar secciones
+        $secciones = [
+            ['Liderazgo y Cultura', 'Evaluación del liderazgo y la cultura organizacional'],
+            ['Estrategia y Visión', 'Evaluación de la estrategia y visión de la organización'],
+            ['Tecnología e Innovación', 'Evaluación de capacidades tecnológicas e innovación'],
+            ['Talento y Organización', 'Evaluación del talento y estructura organizacional'],
+            ['Operaciones y Procesos', 'Evaluación de operaciones y procesos']
+        ];
+
+        $stmt = $conn->prepare("INSERT INTO secciones (nombre, descripcion) VALUES (?, ?)");
+        foreach ($secciones as $seccion) {
+            $stmt->execute($seccion);
+        }
+        mostrarMensaje("Secciones insertadas correctamente");
+
+        // Insertar preguntas
+        $preguntas = [
+            // Liderazgo y Cultura
+            [1, 'Liderazgo adaptativo', 1],
+            [1, 'Cultura de innovación', 2],
+            [1, 'Tolerancia al riesgo', 3],
+            [1, 'Mentalidad de crecimiento', 4],
+            
+            // Estrategia y Visión
+            [2, 'Visión clara de futuro', 1],
+            [2, 'Estrategia digital', 2],
+            [2, 'Adaptabilidad al cambio', 3],
+            [2, 'Planificación disruptiva', 4],
+            
+            // Tecnología e Innovación
+            [3, 'Infraestructura tecnológica', 1],
+            [3, 'Procesos de innovación', 2],
+            [3, 'Adopción de nuevas tecnologías', 3],
+            [3, 'Transformación digital', 4],
+            
+            // Talento y Organización
+            [4, 'Gestión del talento', 1],
+            [4, 'Estructura organizacional', 2],
+            [4, 'Desarrollo de capacidades', 3],
+            [4, 'Cultura de aprendizaje', 4],
+            
+            // Operaciones y Procesos
+            [5, 'Eficiencia operativa', 1],
+            [5, 'Procesos ágiles', 2],
+            [5, 'Automatización', 3],
+            [5, 'Gestión de calidad', 4]
+        ];
+
+        $stmt = $conn->prepare("INSERT INTO preguntas (seccion_id, texto_pregunta, orden) VALUES (?, ?, ?)");
+        foreach ($preguntas as $pregunta) {
+            $stmt->execute($pregunta);
+        }
+        mostrarMensaje("Preguntas insertadas correctamente");
+
+        // Crear índices
+        $indices = [
+            "CREATE INDEX idx_diagnosticos_fecha ON diagnosticos(fecha_diagnostico)",
+            "CREATE INDEX idx_respuestas_diagnostico ON respuestas(diagnostico_id)",
+            "CREATE INDEX idx_respuestas_pregunta ON respuestas(pregunta_id)",
+            "CREATE INDEX idx_plan_accion_diagnostico ON plan_accion(diagnostico_id)",
+            "CREATE INDEX idx_recomendaciones_diagnostico ON recomendaciones(diagnostico_id)"
+        ];
+
+        foreach ($indices as $indice) {
+            try {
+                $conn->exec($indice);
+                mostrarMensaje("Índice creado exitosamente");
+            } catch (PDOException $e) {
+                // Ignorar error si el índice ya existe
+                if ($e->getCode() != '42000') {
+                    mostrarMensaje("Error al crear índice: " . $e->getMessage(), 'error');
+                }
+            }
+        }
+
+    } catch (PDOException $e) {
+        mostrarMensaje("Error al insertar datos iniciales: " . $e->getMessage(), 'error');
+    }
+
+    // Verificar la instalación
     $tables = ['secciones', 'preguntas', 'diagnosticos', 'respuestas', 'recomendaciones', 'plan_accion'];
     $tablesCreated = [];
     
@@ -52,22 +192,9 @@ try {
     }
 
     if (count($tablesCreated) == count($tables)) {
-        mostrarMensaje("Todas las tablas fueron creadas exitosamente.");
+        mostrarMensaje("¡Instalación completada exitosamente! Todas las tablas fueron creadas.");
     } else {
         mostrarMensaje("Algunas tablas no se crearon correctamente. Tablas creadas: " . implode(', ', $tablesCreated), 'error');
-    }
-
-    // Verificar datos iniciales
-    try {
-        $stmt = $conn->query("SELECT COUNT(*) FROM secciones");
-        $seccionesCount = $stmt->fetchColumn();
-        mostrarMensaje("Secciones creadas: $seccionesCount");
-
-        $stmt = $conn->query("SELECT COUNT(*) FROM preguntas");
-        $preguntasCount = $stmt->fetchColumn();
-        mostrarMensaje("Preguntas creadas: $preguntasCount");
-    } catch (PDOException $e) {
-        mostrarMensaje("Error al verificar datos iniciales: " . $e->getMessage(), 'error');
     }
 
 } catch(Exception $e) {
