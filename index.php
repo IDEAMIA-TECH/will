@@ -46,8 +46,37 @@ $fecha_hoy = date('Y-m-d');
             <div class="card-body">
                 <div class="wizard-progress" id="wizardProgress"></div>
                 <form id="diagnosticoForm" method="POST" action="procesar_diagnostico.php">
-                    <!-- Paso 1: MOMENTO EMPRESARIAL -->
+                    <!-- Paso 1: Información General -->
                     <div class="wizard-step active" data-step="1">
+                        <div class="diagnostic-section">
+                            <h2 class="section-title">Información General</h2>
+                            <div class="form-group">
+                                <label for="fecha_diagnostico">Fecha de Diagnóstico</label>
+                                <input type="date" id="fecha_diagnostico" name="fecha_diagnostico" class="form-control" required value="<?php echo $fecha_hoy; ?>">
+                            </div>
+                            <div class="form-group">
+                                <label for="nombre_cliente">Nombre del Cliente</label>
+                                <input type="text" id="nombre_cliente" name="nombre_cliente" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="industria">Industria</label>
+                                <input type="text" id="industria" name="industria" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="tamano_empresa">Tamaño de la Empresa</label>
+                                <select id="tamano_empresa" name="tamano_empresa" class="form-control" required>
+                                    <option value="">Seleccione...</option>
+                                    <option value="Micro">Micro (1-10 empleados)</option>
+                                    <option value="Pequeña">Pequeña (11-50 empleados)</option>
+                                    <option value="Mediana">Mediana (51-250 empleados)</option>
+                                    <option value="Grande">Grande (251+ empleados)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Paso 2: MOMENTO EMPRESARIAL -->
+                    <div class="wizard-step" data-step="2">
                         <div class="diagnostic-section">
                             <h2 class="section-title">Momento Empresarial</h2>
                             <div class="form-group">
@@ -142,8 +171,8 @@ $fecha_hoy = date('Y-m-d');
                         </div>
                     </div>
 
-                    <!-- Paso 2: ÁREAS DE ACCIÓN -->
-                    <div class="wizard-step" data-step="2">
+                    <!-- Paso 3: ÁREAS DE ACCIÓN -->
+                    <div class="wizard-step" data-step="3">
                         <div class="diagnostic-section">
                             <h2 class="section-title">ÁREAS DE ACCIÓN</h2>
                             <?php
@@ -175,8 +204,8 @@ $fecha_hoy = date('Y-m-d');
                         </div>
                     </div>
 
-                    <!-- Paso 3: PITS CALIDAD & PRODUCTIVIDAD -->
-                    <div class="wizard-step" data-step="3">
+                    <!-- Paso 4: PITS CALIDAD & PRODUCTIVIDAD -->
+                    <div class="wizard-step" data-step="4">
                         <div class="diagnostic-section">
                             <h2 class="section-title">PITS CALIDAD & PRODUCTIVIDAD</h2>
                             <?php
@@ -202,8 +231,8 @@ $fecha_hoy = date('Y-m-d');
                         </div>
                     </div>
 
-                    <!-- Paso 4: PITS MAXIMIZACIÓN DE CAPACIDADES -->
-                    <div class="wizard-step" data-step="4">
+                    <!-- Paso 5: PITS MAXIMIZACIÓN DE CAPACIDADES -->
+                    <div class="wizard-step" data-step="5">
                         <div class="diagnostic-section">
                             <h2 class="section-title">PITS MAXIMIZACIÓN DE CAPACIDADES</h2>
                             <?php
@@ -224,35 +253,6 @@ $fecha_hoy = date('Y-m-d');
                                 echo '</div>';
                             }
                             ?>
-                        </div>
-                    </div>
-
-                    <!-- Paso 5: Información General -->
-                    <div class="wizard-step" data-step="5">
-                        <div class="diagnostic-section">
-                            <h2 class="section-title">Información General</h2>
-                            <div class="form-group">
-                                <label for="fecha_diagnostico">Fecha de Diagnóstico</label>
-                                <input type="date" id="fecha_diagnostico" name="fecha_diagnostico" class="form-control" required value="<?php echo $fecha_hoy; ?>">
-                            </div>
-                            <div class="form-group">
-                                <label for="nombre_cliente">Nombre del Cliente</label>
-                                <input type="text" id="nombre_cliente" name="nombre_cliente" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="industria">Industria</label>
-                                <input type="text" id="industria" name="industria" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="tamano_empresa">Tamaño de la Empresa</label>
-                                <select id="tamano_empresa" name="tamano_empresa" class="form-control" required>
-                                    <option value="">Seleccione...</option>
-                                    <option value="Micro">Micro (1-10 empleados)</option>
-                                    <option value="Pequeña">Pequeña (11-50 empleados)</option>
-                                    <option value="Mediana">Mediana (51-250 empleados)</option>
-                                    <option value="Grande">Grande (251+ empleados)</option>
-                                </select>
-                            </div>
                         </div>
                     </div>
 
