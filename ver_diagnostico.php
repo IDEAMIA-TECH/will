@@ -263,6 +263,40 @@ try {
                             <div class="section-results">
                                 <h2><?php echo htmlspecialchars($seccion); ?></h2>
                                 <?php foreach ($subbloques as $titulo => $ids):
+                                    // Si es Oportunidad de Mejora, mostrar solo comentarios
+                                    if ($titulo === 'Oportunidad de Mejora') { ?>
+                                        <h3><?php echo htmlspecialchars($titulo); ?></h3>
+                                        <table class="table">
+                                            <tbody>
+                                            <?php foreach ($ids as $pid):
+                                                if (!isset($respuestas_idx[$pid])) continue;
+                                                $r = $respuestas_idx[$pid];
+                                                $texto = $r['texto_pregunta'] ?? $pid;
+                                                $obs = $r['observaciones'];
+                                                echo '<tr><td><strong>' . htmlspecialchars($texto) . ':</strong><br>' . nl2br(htmlspecialchars($obs)) . '</td></tr>';
+                                            endforeach; ?>
+                                            </tbody>
+                                        </table>
+                                    <?php continue; }
+                                    // Si es el primer subbloque de PITS CALIDAD & PRODUCTIVIDAD, mostrar PITS_TIPO si existe
+                                    if ($seccion === 'PITS CALIDAD & PRODUCTIVIDAD' && $titulo === 'Enfoque por Resultados') {
+                                        $pid_tipo = 'PITS_TIPO';
+                                        if (isset($respuestas_idx[$pid_tipo])) {
+                                            $texto = $respuestas_idx[$pid_tipo]['texto_pregunta'] ?? 'SELECCIONE EL TIPO DE PROCESO QUE LÍDERA:';
+                                            $valor = $respuestas_idx[$pid_tipo]['calificacion'];
+                                            $map = [
+                                                'Estratégico' => 'Estratégico',
+                                                'Operativo' => 'Operativo',
+                                                'Calidad y Productividad' => 'Calidad y Productividad',
+                                                'Soporte' => 'Soporte',
+                                                1 => 'Estratégico', 2 => 'Operativo', 3 => 'Calidad y Productividad', 4 => 'Soporte'
+                                            ];
+                                            $resp = $valor;
+                                            if (isset($map[$valor])) $resp = $map[$valor];
+                                            echo '<div class="form-group"><div class="form-label"><strong>' . htmlspecialchars($texto) . '</strong></div><div class="form-input">' . htmlspecialchars($resp) . '</div></div>';
+                                        }
+                                    }
+                                    // Mostrar el resto de subbloques normalmente (con puntuación)
                                     $suma = 0;
                                     $count = 0;
                                     $max_bloque = count($ids) * $max_pregunta;
@@ -283,11 +317,8 @@ try {
                                         $texto = $r['texto_pregunta'] ?? $pid;
                                         $calif = $r['calificacion'];
                                         $obs = $r['observaciones'];
-                                        // Oportunidad de Mejora es texto abierto
-                                        if (strpos($pid, 'PITS_MEJ_') === 0) {
-                                            echo '<tr><td colspan="3"><strong>' . htmlspecialchars($texto) . ':</strong><br>' . nl2br(htmlspecialchars($obs)) . '</td></tr>';
-                                            continue;
-                                        }
+                                        // Oportunidad de Mejora ya se mostró arriba
+                                        if (strpos($pid, 'PITS_MEJ_') === 0) continue;
                                         echo '<tr>';
                                         echo '<td>' . htmlspecialchars($texto) . '</td>';
                                         echo '<td>' . ($calif !== null ? htmlspecialchars($calif) : '-') . '</td>';
