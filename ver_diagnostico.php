@@ -103,11 +103,19 @@ try {
                         <h2 class="section-title">Resultados por Sección</h2>
                         <?php
                         $seccion_actual = '';
-                        foreach ($respuestas as $respuesta):
+                        $suma_seccion = 0;
+                        $total_respuestas_seccion = 0;
+                        foreach ($respuestas as $i => $respuesta):
                             $nombre_seccion = $respuesta['seccion_nombre'] ?? 'Sin sección';
                             if ($seccion_actual != $nombre_seccion):
-                                if ($seccion_actual != '') echo '</table></div>';
+                                if ($seccion_actual != '') {
+                                    // Mostrar total de la sección anterior
+                                    echo '<tr style="font-weight:bold;"><td colspan="2">Total sección</td><td>' . $suma_seccion . '</td><td></td></tr>';
+                                    echo '</table></div>';
+                                }
                                 $seccion_actual = $nombre_seccion;
+                                $suma_seccion = 0;
+                                $total_respuestas_seccion = 0;
                         ?>
                             <div class="section-results">
                                 <h3><?php echo htmlspecialchars($seccion_actual); ?></h3>
@@ -128,10 +136,16 @@ try {
                                             <td><?php echo htmlspecialchars($respuesta['calificacion']); ?></td>
                                             <td><?php echo htmlspecialchars($respuesta['observaciones']); ?></td>
                                         </tr>
-                        <?php endforeach; ?>
-                                    </tbody>
-                                </table>
-                            </div>
+                        <?php 
+                            $suma_seccion += (int)$respuesta['calificacion']; 
+                            $total_respuestas_seccion++;
+                            // Si es la última respuesta o la siguiente es de otra sección, muestra el total
+                            $siguiente = $respuestas[$i+1]['seccion_nombre'] ?? null;
+                            if ($siguiente !== $seccion_actual) {
+                                echo '<tr style="font-weight:bold;"><td colspan="2">Total sección</td><td>' . $suma_seccion . '</td><td></td></tr>';
+                                echo '</tbody></table></div>';
+                            }
+                        endforeach; ?>
                     </div>
 
                     <!-- Respuestas crudas para depuración -->
