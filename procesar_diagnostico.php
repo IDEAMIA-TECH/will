@@ -95,7 +95,7 @@ try {
         }
     }
 
-    // Procesar switches adicionales de Momento Empresarial
+    // Procesar switches adicionales de Momento Empresarial (solo informativos, no suman)
     $stmt_switch = $conn->prepare("
         INSERT INTO respuestas (
             diagnostico_id, pregunta_id, calificacion, observaciones
@@ -116,8 +116,7 @@ try {
             $valor,
             null
         ]);
-        $puntuacion_total += $valor;
-        $total_preguntas++;
+        // NO sumar a $puntuacion_total ni a $total_preguntas
     }
 
     // Procesar ÁREAS DE ACCIÓN

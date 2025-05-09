@@ -44,10 +44,13 @@ try {
     $totales_seccion = [];
     foreach ($respuestas as $respuesta) {
         $nombre_seccion = $respuesta['seccion_nombre'] ?? 'Sin sección';
+        $es_switch = (strpos($respuesta['pregunta_id'], 'M1S_') === 0);
         if (!isset($totales_seccion[$nombre_seccion])) {
             $totales_seccion[$nombre_seccion] = 0;
         }
-        $totales_seccion[$nombre_seccion] += (int)$respuesta['calificacion'];
+        if (!$es_switch) {
+            $totales_seccion[$nombre_seccion] += (int)$respuesta['calificacion'];
+        }
     }
 
 } catch (Exception $e) {
@@ -136,6 +139,7 @@ try {
                         $total_respuestas_seccion = 0;
                         foreach ($respuestas as $i => $respuesta):
                             $nombre_seccion = $respuesta['seccion_nombre'] ?? 'Sin sección';
+                            $es_switch = (strpos($respuesta['pregunta_id'], 'M1S_') === 0);
                             if ($seccion_actual != $nombre_seccion):
                                 if ($seccion_actual != '') {
                                     // Mostrar total de la sección anterior
@@ -159,15 +163,26 @@ try {
                                     </thead>
                                     <tbody>
                         <?php endif; ?>
-                                        <tr>
+                                        <tr<?php if($es_switch) echo ' style="background:#f5f5f5;"'; ?>>
                                             <td><?php echo htmlspecialchars($respuesta['pregunta_id']); ?></td>
                                             <td><?php echo htmlspecialchars($respuesta['texto_pregunta'] ?? '(Sin texto)'); ?></td>
-                                            <td><?php echo htmlspecialchars($respuesta['calificacion']); ?></td>
+                                            <td>
+                                                <?php
+                                                if ($es_switch) {
+                                                    echo ($respuesta['calificacion'] == 1) ? 'Sí' : 'No';
+                                                } else {
+                                                    echo htmlspecialchars($respuesta['calificacion']);
+                                                }
+                                                ?>
+                                            </td>
                                             <td><?php echo htmlspecialchars($respuesta['observaciones']); ?></td>
                                         </tr>
                         <?php 
-                            $suma_seccion += (int)$respuesta['calificacion']; 
-                            $total_respuestas_seccion++;
+                            // Solo sumar si NO es switch
+                            if (!$es_switch) {
+                                $suma_seccion += (int)$respuesta['calificacion']; 
+                                $total_respuestas_seccion++;
+                            }
                             // Si es la última respuesta o la siguiente es de otra sección, muestra el total
                             $siguiente = $respuestas[$i+1]['seccion_nombre'] ?? null;
                             if ($siguiente !== $seccion_actual) {
