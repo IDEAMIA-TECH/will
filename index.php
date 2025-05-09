@@ -171,33 +171,113 @@ $fecha_hoy = date('Y-m-d');
                         </div>
                     </div>
 
-                    <!-- Paso 3: ÁREAS DE ACCIÓN -->
+                    <!-- Paso 3: PITS Comercial -->
                     <div class="wizard-step" data-step="3">
                         <div class="diagnostic-section">
-                            <h2 class="section-title">ÁREAS DE ACCIÓN</h2>
+                            <h2 class="section-title">PITS Comercial</h2>
+
+                            <!-- DIRECCIÓN COMERCIAL -->
+                            <h3>Dirección Comercial</h3>
                             <?php
-                            $areas_preguntas = [
-                                '¿La Alta Dirección promueve la visión y misión de la organización?',
-                                '¿La Alta Dirección promueve la cultura organizacional?',
-                                '¿La Alta Dirección promueve la innovación?',
-                                '¿La Alta Dirección promueve la mejora continua?',
-                                '¿La Alta Dirección promueve la toma de decisiones basada en datos?',
-                                '¿La Alta Dirección promueve la comunicación efectiva?',
-                                '¿La Alta Dirección promueve el trabajo en equipo?',
-                                '¿La Alta Dirección promueve el desarrollo del talento?',
-                                '¿La Alta Dirección promueve la responsabilidad social?',
-                                '¿La Alta Dirección promueve la ética y valores?'
+                            $direccion_comercial = [
+                                'Líder enfocado en desarrollar una gestión comercial basada en resultados.',
+                                'El organigrama comercial responde  a la plataforma requerida para lograr objetivos y metas.',
+                                'El Sistema de información facilita la toma de decisión desde un ambito comercial y en forma oportuna.'
                             ];
-                            foreach ($areas_preguntas as $i => $pregunta) {
+                            foreach ($direccion_comercial as $i => $pregunta) {
                                 $num = $i + 1;
                                 echo '<div class="form-group">';
                                 echo '<label>' . htmlspecialchars($pregunta) . '</label>';
                                 echo '<div class="rating-group">';
-                                for ($r = 1; $r <= 5; $r++) {
-                                    echo '<label class="rating-label"><input type="radio" name="area_accion_' . $num . '" value="' . $r . '" required> ' . $r . '</label>';
+                                for ($r = 1; $r <= 4; $r++) {
+                                    echo '<label class="rating-label"><input type="radio" name="pits_dircom_' . $num . '" value="' . $r . '" required> ' . $r . '</label>';
                                 }
                                 echo '</div>';
-                                echo '<textarea name="comentario_area_accion_' . $num . '" class="form-control" rows="2" placeholder="Comentarios (opcional)"></textarea>';
+                                echo '<textarea name="comentario_pits_dircom_' . $num . '" class="form-control" rows="2" placeholder="Comentarios (opcional)"></textarea>';
+                                echo '</div>';
+                            }
+                            ?>
+
+                            <!-- PROCESO DE GESTIÓN COMERCIAL -->
+                            <h3>Proceso de Gestión Comercial</h3>
+                            <?php
+                            $proceso_gestion = [
+                                'Efectividad de la gestión para Pre - Venta',
+                                'Efectividad de la gestión para Venta',
+                                'Efectividad de la gestión para Post-Venta',
+                                'Efectividad de la gestión para Desarrollo de Cuenta'
+                            ];
+                            foreach ($proceso_gestion as $i => $pregunta) {
+                                $num = $i + 1;
+                                echo '<div class="form-group">';
+                                echo '<label>' . htmlspecialchars($pregunta) . '</label>';
+                                echo '<div class="rating-group">';
+                                for ($r = 1; $r <= 4; $r++) {
+                                    echo '<label class="rating-label"><input type="radio" name="pits_gestion_' . $num . '" value="' . $r . '" required> ' . $r . '</label>';
+                                }
+                                echo '</div>';
+                                echo '<textarea name="comentario_pits_gestion_' . $num . '" class="form-control" rows="2" placeholder="Comentarios (opcional)"></textarea>';
+                                echo '</div>';
+                            }
+                            ?>
+
+                            <!-- SISTEMA DE INFORMACIÓN -->
+                            <h3>Sistema de Información</h3>
+                            <?php
+                            $sistema_info = [
+                                'Captura  y organiza la información del cliente, tanto su comportamiento de compra como los contactos que se establecen entre el cliente y la organización. Etapa Prospecto - Cliente Fidelizado'
+                            ];
+                            foreach ($sistema_info as $i => $pregunta) {
+                                $num = $i + 1;
+                                echo '<div class="form-group">';
+                                echo '<label>' . htmlspecialchars($pregunta) . '</label>';
+                                echo '<div class="rating-group">';
+                                for ($r = 1; $r <= 4; $r++) {
+                                    echo '<label class="rating-label"><input type="radio" name="pits_info_' . $num . '" value="' . $r . '" required> ' . $r . '</label>';
+                                }
+                                echo '</div>';
+                                echo '<textarea name="comentario_pits_info_' . $num . '" class="form-control" rows="2" placeholder="Comentarios (opcional)"></textarea>';
+                                echo '</div>';
+                            }
+                            ?>
+
+                            <!-- ESTRATEGIAS Y TÁCTICAS -->
+                            <h3>Estrategias y Tácticas</h3>
+                            <?php
+                            $estrategias = [
+                                'Los objetivos,metas, estratégias comerciales estan documentadas en un Plan Comercial, con un plazo establecido para su cumplimiento.'
+                            ];
+                            foreach ($estrategias as $i => $pregunta) {
+                                $num = $i + 1;
+                                echo '<div class="form-group">';
+                                echo '<label>' . htmlspecialchars($pregunta) . '</label>';
+                                echo '<div class="rating-group">';
+                                for ($r = 1; $r <= 4; $r++) {
+                                    echo '<label class="rating-label"><input type="radio" name="pits_estrategia_' . $num . '" value="' . $r . '" required> ' . $r . '</label>';
+                                }
+                                echo '</div>';
+                                echo '<textarea name="comentario_pits_estrategia_' . $num . '" class="form-control" rows="2" placeholder="Comentarios (opcional)"></textarea>';
+                                echo '</div>';
+                            }
+                            ?>
+
+                            <!-- METRICAS COMERCIALES -->
+                            <h3>Métricas Comerciales</h3>
+                            <?php
+                            $metricas = [
+                                'Conoce el comportamiento histórico de indicadores comerciales, a fin de medirlos y controlarlos.',
+                                'Sistema de medición de satisfacción al cliente y administración de comentarios y reclamos.'
+                            ];
+                            foreach ($metricas as $i => $pregunta) {
+                                $num = $i + 1;
+                                echo '<div class="form-group">';
+                                echo '<label>' . htmlspecialchars($pregunta) . '</label>';
+                                echo '<div class="rating-group">';
+                                for ($r = 1; $r <= 4; $r++) {
+                                    echo '<label class="rating-label"><input type="radio" name="pits_metricas_' . $num . '" value="' . $r . '" required> ' . $r . '</label>';
+                                }
+                                echo '</div>';
+                                echo '<textarea name="comentario_pits_metricas_' . $num . '" class="form-control" rows="2" placeholder="Comentarios (opcional)"></textarea>';
                                 echo '</div>';
                             }
                             ?>
@@ -208,26 +288,92 @@ $fecha_hoy = date('Y-m-d');
                     <div class="wizard-step" data-step="4">
                         <div class="diagnostic-section">
                             <h2 class="section-title">PITS CALIDAD & PRODUCTIVIDAD</h2>
+
+                            <!-- Tipo de Proceso -->
+                            <div class="form-group">
+                                <label><strong>SELECCIONE EL TIPO DE PROCESO QUE LÍDERA:</strong></label><br>
+                                <label class="rating-label"><input type="radio" name="tipo_proceso" value="Estratégico" required> Estratégico</label>
+                                <label class="rating-label"><input type="radio" name="tipo_proceso" value="Operativo"> Operativo</label>
+                                <label class="rating-label"><input type="radio" name="tipo_proceso" value="Calidad y Productividad"> Calidad y Productividad</label>
+                                <label class="rating-label"><input type="radio" name="tipo_proceso" value="Soporte"> Soporte</label>
+                            </div>
+
+                            <!-- ENFOQUE POR RESULTADOS -->
+                            <h3>Enfoque por Resultados</h3>
                             <?php
-                            $pits_preguntas = [
-                                '¿El área cuenta con indicadores de calidad y productividad definidos?',
-                                '¿Se da seguimiento periódico a los indicadores de calidad y productividad?',
-                                '¿Se implementan acciones de mejora cuando los indicadores no se cumplen?',
-                                '¿El personal está capacitado para cumplir con los estándares de calidad y productividad?'
+                            $enfoque_resultados = [
+                                'El dueño del proceso, maneja la operación, en tal forma que pueden delegar en forma efectiva a su equipo de trabajo',
+                                'La gestión está enfocada a través de resultados medibles en tiempo y calidad.',
+                                'Es comprendida la finalidad para la cual se implementa el proceso.',
+                                'El mando medio, desempeña un proceso de gestión enfocado en control, seguimiento y resultados'
                             ];
-                            foreach ($pits_preguntas as $i => $pregunta) {
+                            foreach ($enfoque_resultados as $i => $pregunta) {
                                 $num = $i + 1;
                                 echo '<div class="form-group">';
                                 echo '<label>' . htmlspecialchars($pregunta) . '</label>';
                                 echo '<div class="rating-group">';
                                 for ($r = 1; $r <= 4; $r++) {
-                                    echo '<label class="rating-label"><input type="radio" name="pits_' . $num . '" value="' . $r . '" required> ' . $r . '</label>';
+                                    echo '<label class="rating-label"><input type="radio" name="pits_resultados_' . $num . '" value="' . $r . '" required> ' . $r . '</label>';
                                 }
                                 echo '</div>';
-                                echo '<textarea name="comentario_pits_' . $num . '" class="form-control" rows="2" placeholder="Comentarios (opcional)"></textarea>';
                                 echo '</div>';
                             }
                             ?>
+
+                            <!-- ENFOQUE POR PROCESO -->
+                            <h3>Enfoque por Proceso</h3>
+                            <?php
+                            $enfoque_proceso = [
+                                'El organigrama funcional, contempla un área de calidad y procesos.',
+                                'Cuenta con un Mapa de Proceso.',
+                                'Cuenta con Diagrama de Flujos de Trabajo (secuencia de actividades).',
+                                'Identifica los clientes internos a los cuales responde el proceso.'
+                            ];
+                            foreach ($enfoque_proceso as $i => $pregunta) {
+                                $num = $i + 1;
+                                echo '<div class="form-group">';
+                                echo '<label>' . htmlspecialchars($pregunta) . '</label>';
+                                echo '<div class="rating-group">';
+                                for ($r = 1; $r <= 4; $r++) {
+                                    echo '<label class="rating-label"><input type="radio" name="pits_proceso_' . $num . '" value="' . $r . '" required> ' . $r . '</label>';
+                                }
+                                echo '</div>';
+                                echo '</div>';
+                            }
+                            ?>
+
+                            <!-- CALIDAD Y MEJORA CONTINUA -->
+                            <h3>Calidad y Mejora Continua</h3>
+                            <?php
+                            $calidad_mejora = [
+                                'Existe un sistema de gestión por indicadores',
+                                'Las salida del proceso cumple con requisitos y especificaciones previamente definidas.',
+                                'Su proceso es medible y auditable.',
+                                'Cuenta con un programa estructurado de auditoría a sus procesos.'
+                            ];
+                            foreach ($calidad_mejora as $i => $pregunta) {
+                                $num = $i + 1;
+                                echo '<div class="form-group">';
+                                echo '<label>' . htmlspecialchars($pregunta) . '</label>';
+                                echo '<div class="rating-group">';
+                                for ($r = 1; $r <= 4; $r++) {
+                                    echo '<label class="rating-label"><input type="radio" name="pits_calidad_' . $num . '" value="' . $r . '" required> ' . $r . '</label>';
+                                }
+                                echo '</div>';
+                                echo '</div>';
+                            }
+                            ?>
+
+                            <!-- OPORTUNIDAD DE MEJORA -->
+                            <h3>Oportunidad de Mejora</h3>
+                            <div class="form-group">
+                                <label>Factores Críticos: Identifique dos actividades dentro de su proceso que de no realizarse en forma correcta, el proceso falla.</label>
+                                <textarea name="oportunidad_factores" class="form-control" rows="2" placeholder="Describa los factores críticos..."></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Puntos clave del proceso: Identifique dos momentos y lugares donde se toman decisiones que afectan a todo el proceso en conjunto.</label>
+                                <textarea name="oportunidad_puntos" class="form-control" rows="2" placeholder="Describa los puntos clave..."></textarea>
+                            </div>
                         </div>
                     </div>
 
@@ -235,21 +381,71 @@ $fecha_hoy = date('Y-m-d');
                     <div class="wizard-step" data-step="5">
                         <div class="diagnostic-section">
                             <h2 class="section-title">PITS MAXIMIZACIÓN DE CAPACIDADES</h2>
+
+                            <!-- IMPACTO DEL CAPITAL HUMANO EN LA PRODUCTIVIDAD -->
+                            <h3>Impacto del Capital Humano en la Productividad</h3>
                             <?php
-                            $pits_max_preguntas = [
-                                '¿El personal cuenta con las competencias necesarias para su puesto?',
-                                '¿Se realizan capacitaciones periódicas para el desarrollo de habilidades?',
-                                '¿Se promueve la polivalencia y multifuncionalidad del personal?',
-                                '¿Existen programas de reconocimiento al desempeño y desarrollo?' 
+                            $impacto_capital = [
+                                '¿El líder del área de Capital humano conoce la importancia del capital humano para la productividad de la organización?',
+                                '¿Existe un sistema de evaluación de desempeño, desde el enfoque de eficiencia y eficacia?',
+                                '¿La optimización de cargos, es una constante dentro del proceso de administración del Capital humano?',
+                                '¿Considera que dentro del proceso de reclutamiento, se ejecutan actividades orientadas a evaluar el perfil de acuerdo al perfil del cargo que desempeñará?'
                             ];
-                            foreach ($pits_max_preguntas as $i => $pregunta) {
+                            foreach ($impacto_capital as $i => $pregunta) {
                                 $num = $i + 1;
                                 echo '<div class="form-group">';
                                 echo '<label>' . htmlspecialchars($pregunta) . '</label>';
-                                echo '<div class="yesno-group">';
-                                echo '<label class="yesno-label"><input type="radio" name="pits_max_' . $num . '" value="1" required> Sí</label>';
-                                echo '<label class="yesno-label"><input type="radio" name="pits_max_' . $num . '" value="0"> No</label>';
+                                echo '<div class="rating-group">';
+                                for ($r = 1; $r <= 4; $r++) {
+                                    echo '<label class="rating-label"><input type="radio" name="pits_capital_' . $num . '" value="' . $r . '" required> ' . $r . '</label>';
+                                }
                                 echo '</div>';
+                                echo '<textarea name="comentario_pits_capital_' . $num . '" class="form-control" rows="2" placeholder="Comentarios (opcional)"></textarea>';
+                                echo '</div>';
+                            }
+                            ?>
+
+                            <!-- INVENTARIO DE CAPACIDADES -->
+                            <h3>Inventario de Capacidades</h3>
+                            <?php
+                            $inventario = [
+                                '¿La organización cuenta con un Inventario de Capacidades?',
+                                '¿Mantiene actualizado el inventario de capacidades?',
+                                '¿Aprovecha al máximo las capacidades de su equipo de gestión?',
+                                '¿Conoce las brechas entre el perfil actual de sus empleados y el perfil ideal?'
+                            ];
+                            foreach ($inventario as $i => $pregunta) {
+                                $num = $i + 1;
+                                echo '<div class="form-group">';
+                                echo '<label>' . htmlspecialchars($pregunta) . '</label>';
+                                echo '<div class="rating-group">';
+                                for ($r = 1; $r <= 4; $r++) {
+                                    echo '<label class="rating-label"><input type="radio" name="pits_inventario_' . $num . '" value="' . $r . '" required> ' . $r . '</label>';
+                                }
+                                echo '</div>';
+                                echo '<textarea name="comentario_pits_inventario_' . $num . '" class="form-control" rows="2" placeholder="Comentarios (opcional)"></textarea>';
+                                echo '</div>';
+                            }
+                            ?>
+
+                            <!-- MAXIMIZACIÓN DE CAPACIDADES -->
+                            <h3>Maximización de Capacidades</h3>
+                            <?php
+                            $maximizacion = [
+                                '¿Cuenta con un Plan de Capacitación?',
+                                '¿Cuenta con un Plan de Desarrollo de Carrera?',
+                                '¿Cuenta con un programa institucionalizado para motivar y retener a su personal?'
+                            ];
+                            foreach ($maximizacion as $i => $pregunta) {
+                                $num = $i + 1;
+                                echo '<div class="form-group">';
+                                echo '<label>' . htmlspecialchars($pregunta) . '</label>';
+                                echo '<div class="rating-group">';
+                                for ($r = 1; $r <= 4; $r++) {
+                                    echo '<label class="rating-label"><input type="radio" name="pits_max_' . $num . '" value="' . $r . '" required> ' . $r . '</label>';
+                                }
+                                echo '</div>';
+                                echo '<textarea name="comentario_pits_max_' . $num . '" class="form-control" rows="2" placeholder="Comentarios (opcional)"></textarea>';
                                 echo '</div>';
                             }
                             ?>

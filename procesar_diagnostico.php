@@ -147,26 +147,100 @@ try {
         }
     }
 
-    // Procesar PITS CALIDAD & PRODUCTIVIDAD
-    $stmt_pits = $conn->prepare("
-        INSERT INTO respuestas (
-            diagnostico_id, pregunta_id, calificacion, observaciones
-        ) VALUES (?, ?, ?, ?)
-    ");
-    for ($i = 1; $i <= 4; $i++) {
-        $key = 'pits_' . $i;
+    // Procesar PITS Comercial - Dirección Comercial
+    for ($i = 1; $i <= 3; $i++) {
+        $key = 'pits_dircom_' . $i;
         if (isset($_POST[$key])) {
             $valor = (int)$_POST[$key];
-            if ($valor < 0 || $valor > 5) $valor = max(0, min(5, $valor));
-            $comentario = $_POST['comentario_pits_' . $i] ?? null;
-            logDebug("Procesando PITS calidad", [
-                'pregunta' => $key,
-                'valor' => $valor,
-                'pregunta_id' => 'P3_' . $i
-            ]);
-            $stmt_pits->execute([
+            $comentario = $_POST['comentario_pits_dircom_' . $i] ?? null;
+            $stmt = $conn->prepare("
+                INSERT INTO respuestas (
+                    diagnostico_id, pregunta_id, calificacion, observaciones
+                ) VALUES (?, ?, ?, ?)
+            ");
+            $stmt->execute([
                 $diagnostico_id,
-                'P3_' . $i,
+                'PITS_DIRCOM_' . $i,
+                $valor,
+                $comentario
+            ]);
+            $puntuacion_total += $valor;
+            $total_preguntas++;
+        }
+    }
+    // Proceso de Gestión Comercial
+    for ($i = 1; $i <= 4; $i++) {
+        $key = 'pits_gestion_' . $i;
+        if (isset($_POST[$key])) {
+            $valor = (int)$_POST[$key];
+            $comentario = $_POST['comentario_pits_gestion_' . $i] ?? null;
+            $stmt = $conn->prepare("
+                INSERT INTO respuestas (
+                    diagnostico_id, pregunta_id, calificacion, observaciones
+                ) VALUES (?, ?, ?, ?)
+            ");
+            $stmt->execute([
+                $diagnostico_id,
+                'PITS_GESTION_' . $i,
+                $valor,
+                $comentario
+            ]);
+            $puntuacion_total += $valor;
+            $total_preguntas++;
+        }
+    }
+    // Sistema de Información
+    $key = 'pits_info_1';
+    if (isset($_POST[$key])) {
+        $valor = (int)$_POST[$key];
+        $comentario = $_POST['comentario_pits_info_1'] ?? null;
+        $stmt = $conn->prepare("
+            INSERT INTO respuestas (
+                diagnostico_id, pregunta_id, calificacion, observaciones
+            ) VALUES (?, ?, ?, ?)
+        ");
+        $stmt->execute([
+            $diagnostico_id,
+            'PITS_INFO_1',
+            $valor,
+            $comentario
+        ]);
+        $puntuacion_total += $valor;
+        $total_preguntas++;
+    }
+    // Estrategias y Tácticas
+    $key = 'pits_estrategia_1';
+    if (isset($_POST[$key])) {
+        $valor = (int)$_POST[$key];
+        $comentario = $_POST['comentario_pits_estrategia_1'] ?? null;
+        $stmt = $conn->prepare("
+            INSERT INTO respuestas (
+                diagnostico_id, pregunta_id, calificacion, observaciones
+            ) VALUES (?, ?, ?, ?)
+        ");
+        $stmt->execute([
+            $diagnostico_id,
+            'PITS_ESTRATEGIA_1',
+            $valor,
+            $comentario
+        ]);
+        $puntuacion_total += $valor;
+        $total_preguntas++;
+    }
+    // Métricas Comerciales
+    for ($i = 1; $i <= 2; $i++) {
+        $key = 'pits_metricas_' . $i;
+        if (isset($_POST[$key])) {
+            $valor = (int)$_POST[$key];
+            $comentario = $_POST['comentario_pits_metricas_' . $i] ?? null;
+            $stmt = $conn->prepare("
+                INSERT INTO respuestas (
+                    diagnostico_id, pregunta_id, calificacion, observaciones
+                ) VALUES (?, ?, ?, ?)
+            ");
+            $stmt->execute([
+                $diagnostico_id,
+                'PITS_METRICAS_' . $i,
                 $valor,
                 $comentario
             ]);
@@ -175,25 +249,19 @@ try {
         }
     }
 
-    // Procesar PITS MAXIMIZACIÓN DE CAPACIDADES
-    $stmt_pits_max = $conn->prepare("
-        INSERT INTO respuestas (
-            diagnostico_id, pregunta_id, calificacion, observaciones
-        ) VALUES (?, ?, ?, ?)
-    ");
+    // Procesar PITS CALIDAD & PRODUCTIVIDAD - Enfoque por Resultados
     for ($i = 1; $i <= 4; $i++) {
-        $key = 'pits_max_' . $i;
+        $key = 'pits_resultados_' . $i;
         if (isset($_POST[$key])) {
             $valor = (int)$_POST[$key];
-            if ($valor < 0 || $valor > 5) $valor = max(0, min(5, $valor));
-            logDebug("Procesando PITS maximización", [
-                'pregunta' => $key,
-                'valor' => $valor,
-                'pregunta_id' => 'P4_' . $i
-            ]);
-            $stmt_pits_max->execute([
+            $stmt = $conn->prepare("
+                INSERT INTO respuestas (
+                    diagnostico_id, pregunta_id, calificacion, observaciones
+                ) VALUES (?, ?, ?, ?)
+            ");
+            $stmt->execute([
                 $diagnostico_id,
-                'P4_' . $i,
+                'PITS_RES_' . $i,
                 $valor,
                 null
             ]);
@@ -201,30 +269,132 @@ try {
             $total_preguntas++;
         }
     }
-
-    // Procesar respuestas normales
-    $stmt = $conn->prepare("
-        INSERT INTO respuestas (
-            diagnostico_id, pregunta_id, calificacion, observaciones
-        ) VALUES (?, ?, ?, ?)
-    ");
-
-    foreach ($_POST as $key => $value) {
-        if (strpos($key, 'calificacion_') === 0) {
-            $pregunta_id = substr($key, 12);
-            $observacion_key = 'observacion_' . $pregunta_id;
-            $valor = (int)$value;
-            if ($valor < 0 || $valor > 5) $valor = max(0, min(5, $valor));
-            logDebug("Procesando respuesta normal", [
-                'pregunta' => $key,
-                'valor' => $valor,
-                'pregunta_id' => $pregunta_id
-            ]);
+    // Enfoque por Proceso
+    for ($i = 1; $i <= 4; $i++) {
+        $key = 'pits_proceso_' . $i;
+        if (isset($_POST[$key])) {
+            $valor = (int)$_POST[$key];
+            $stmt = $conn->prepare("
+                INSERT INTO respuestas (
+                    diagnostico_id, pregunta_id, calificacion, observaciones
+                ) VALUES (?, ?, ?, ?)
+            ");
             $stmt->execute([
                 $diagnostico_id,
-                $pregunta_id,
+                'PITS_PROC_' . $i,
                 $valor,
-                $_POST[$observacion_key] ?? null
+                null
+            ]);
+            $puntuacion_total += $valor;
+            $total_preguntas++;
+        }
+    }
+    // Calidad y Mejora Continua
+    for ($i = 1; $i <= 4; $i++) {
+        $key = 'pits_calidad_' . $i;
+        if (isset($_POST[$key])) {
+            $valor = (int)$_POST[$key];
+            $stmt = $conn->prepare("
+                INSERT INTO respuestas (
+                    diagnostico_id, pregunta_id, calificacion, observaciones
+                ) VALUES (?, ?, ?, ?)
+            ");
+            $stmt->execute([
+                $diagnostico_id,
+                'PITS_CAL_' . $i,
+                $valor,
+                null
+            ]);
+            $puntuacion_total += $valor;
+            $total_preguntas++;
+        }
+    }
+    // Oportunidad de Mejora (textos)
+    if (!empty($_POST['oportunidad_factores'])) {
+        $stmt = $conn->prepare("
+            INSERT INTO respuestas (
+                diagnostico_id, pregunta_id, calificacion, observaciones
+            ) VALUES (?, ?, ?, ?)
+        ");
+        $stmt->execute([
+            $diagnostico_id,
+            'PITS_MEJ_1',
+            null,
+            $_POST['oportunidad_factores']
+        ]);
+    }
+    if (!empty($_POST['oportunidad_puntos'])) {
+        $stmt = $conn->prepare("
+            INSERT INTO respuestas (
+                diagnostico_id, pregunta_id, calificacion, observaciones
+            ) VALUES (?, ?, ?, ?)
+        ");
+        $stmt->execute([
+            $diagnostico_id,
+            'PITS_MEJ_2',
+            null,
+            $_POST['oportunidad_puntos']
+        ]);
+    }
+
+    // Procesar PITS MAXIMIZACIÓN DE CAPACIDADES - Impacto del Capital Humano
+    for ($i = 1; $i <= 4; $i++) {
+        $key = 'pits_capital_' . $i;
+        if (isset($_POST[$key])) {
+            $valor = (int)$_POST[$key];
+            $comentario = $_POST['comentario_pits_capital_' . $i] ?? null;
+            $stmt = $conn->prepare("
+                INSERT INTO respuestas (
+                    diagnostico_id, pregunta_id, calificacion, observaciones
+                ) VALUES (?, ?, ?, ?)
+            ");
+            $stmt->execute([
+                $diagnostico_id,
+                'PITS_CAPITAL_' . $i,
+                $valor,
+                $comentario
+            ]);
+            $puntuacion_total += $valor;
+            $total_preguntas++;
+        }
+    }
+    // Inventario de Capacidades
+    for ($i = 1; $i <= 4; $i++) {
+        $key = 'pits_inventario_' . $i;
+        if (isset($_POST[$key])) {
+            $valor = (int)$_POST[$key];
+            $comentario = $_POST['comentario_pits_inventario_' . $i] ?? null;
+            $stmt = $conn->prepare("
+                INSERT INTO respuestas (
+                    diagnostico_id, pregunta_id, calificacion, observaciones
+                ) VALUES (?, ?, ?, ?)
+            ");
+            $stmt->execute([
+                $diagnostico_id,
+                'PITS_INVENTARIO_' . $i,
+                $valor,
+                $comentario
+            ]);
+            $puntuacion_total += $valor;
+            $total_preguntas++;
+        }
+    }
+    // Maximización de Capacidades
+    for ($i = 1; $i <= 3; $i++) {
+        $key = 'pits_max_' . $i;
+        if (isset($_POST[$key])) {
+            $valor = (int)$_POST[$key];
+            $comentario = $_POST['comentario_pits_max_' . $i] ?? null;
+            $stmt = $conn->prepare("
+                INSERT INTO respuestas (
+                    diagnostico_id, pregunta_id, calificacion, observaciones
+                ) VALUES (?, ?, ?, ?)
+            ");
+            $stmt->execute([
+                $diagnostico_id,
+                'PITS_MAX_' . $i,
+                $valor,
+                $comentario
             ]);
             $puntuacion_total += $valor;
             $total_preguntas++;
