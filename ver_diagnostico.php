@@ -40,6 +40,16 @@ try {
     $stmt->execute([$diagnostico_id]);
     $plan_accion = $stmt->fetchAll();
 
+    // Calcular totales por sección
+    $totales_seccion = [];
+    foreach ($respuestas as $respuesta) {
+        $nombre_seccion = $respuesta['seccion_nombre'] ?? 'Sin sección';
+        if (!isset($totales_seccion[$nombre_seccion])) {
+            $totales_seccion[$nombre_seccion] = 0;
+        }
+        $totales_seccion[$nombre_seccion] += (int)$respuesta['calificacion'];
+    }
+
 } catch (Exception $e) {
     $error = $e->getMessage();
 }
@@ -94,6 +104,25 @@ try {
                                     <th>Porcentaje de Implementación</th>
                                     <td><?php echo number_format($diagnostico['porcentaje_implementacion'], 1); ?>%</td>
                                 </tr>
+                            </table>
+                        </div>
+                        <!-- Tabla resumen de totales por sección -->
+                        <div class="table-responsive" style="margin-top:20px;">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Sección</th>
+                                        <th>Total de Calificación</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($totales_seccion as $seccion => $total): ?>
+                                    <tr>
+                                        <td><?php echo htmlspecialchars($seccion); ?></td>
+                                        <td><?php echo htmlspecialchars($total); ?></td>
+                                    </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
                             </table>
                         </div>
                     </div>
