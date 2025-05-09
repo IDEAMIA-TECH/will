@@ -42,16 +42,46 @@ try {
 
     // Calcular totales por sección
     $totales_seccion = [];
-    foreach ($respuestas as $respuesta) {
-        $nombre_seccion = $respuesta['seccion_nombre'] ?? 'Sin sección';
-        $es_switch = (strpos($respuesta['pregunta_id'], 'M1S_') === 0);
-        if (!isset($totales_seccion[$nombre_seccion])) {
-            $totales_seccion[$nombre_seccion] = 0;
-        }
-        if (!$es_switch) {
-            $totales_seccion[$nombre_seccion] += (int)$respuesta['calificacion'];
+    $puntuacion_total = 0;
+    $total_preguntas = 0;
+    $max_pregunta = 4; // máximo valor por pregunta
+    // IDs de preguntas a considerar (excluyendo switches y textos abiertos)
+    $bloques = [
+        'PITS Comercial' => [
+            'Dirección Comercial' => ['PITS_DIRCOM_1','PITS_DIRCOM_2','PITS_DIRCOM_3'],
+            'Proceso de Gestión Comercial' => ['PITS_GESTION_1','PITS_GESTION_2','PITS_GESTION_3','PITS_GESTION_4'],
+            'Sistema de Información' => ['PITS_INFO_1'],
+            'Estrategias y Tácticas' => ['PITS_ESTRATEGIA_1'],
+            'Métricas Comerciales' => ['PITS_METRICAS_1','PITS_METRICAS_2'],
+        ],
+        'PITS CALIDAD & PRODUCTIVIDAD' => [
+            'Enfoque por Resultados' => ['PITS_RES_1','PITS_RES_2','PITS_RES_3','PITS_RES_4'],
+            'Enfoque por Proceso' => ['PITS_PROC_1','PITS_PROC_2','PITS_PROC_3','PITS_PROC_4'],
+            'Calidad y Mejora Continua' => ['PITS_CAL_1','PITS_CAL_2','PITS_CAL_3','PITS_CAL_4'],
+        ],
+        'PITS MAXIMIZACIÓN DE CAPACIDADES' => [
+            'Impacto del Capital Humano en la Productividad' => ['PITS_CAPITAL_1','PITS_CAPITAL_2','PITS_CAPITAL_3','PITS_CAPITAL_4'],
+            'Inventario de Capacidades' => ['PITS_INVENTARIO_1','PITS_INVENTARIO_2','PITS_INVENTARIO_3','PITS_INVENTARIO_4'],
+            'Maximización de Capacidades' => ['PITS_MAX_1','PITS_MAX_2','PITS_MAX_3'],
+        ],
+    ];
+    // Indexar respuestas por pregunta_id
+    $respuestas_idx = [];
+    foreach ($respuestas as $r) {
+        $respuestas_idx[$r['pregunta_id']] = $r;
+    }
+    foreach ($bloques as $seccion => $subbloques) {
+        foreach ($subbloques as $ids) {
+            foreach ($ids as $pid) {
+                if (isset($respuestas_idx[$pid]) && $respuestas_idx[$pid]['calificacion'] !== null && $respuestas_idx[$pid]['calificacion'] !== '') {
+                    $puntuacion_total += (int)$respuestas_idx[$pid]['calificacion'];
+                    $total_preguntas++;
+                }
+            }
         }
     }
+    $max_total = $total_preguntas * $max_pregunta;
+    $porcentaje = $max_total > 0 ? ($puntuacion_total / $max_total) * 100 : 0;
 
 } catch (Exception $e) {
     $error = $e->getMessage();
@@ -101,11 +131,11 @@ try {
                                 </tr>
                                 <tr>
                                     <th>Puntuación Total</th>
-                                    <td><?php echo htmlspecialchars($diagnostico['puntuacion_total']); ?>/100</td>
+                                    <td><?php echo $puntuacion_total . ' / ' . $max_total; ?></td>
                                 </tr>
                                 <tr>
                                     <th>Porcentaje de Implementación</th>
-                                    <td><?php echo number_format($diagnostico['porcentaje_implementacion'], 1); ?>%</td>
+                                    <td><?php echo number_format($porcentaje, 1); ?>%</td>
                                 </tr>
                             </table>
                         </div>
