@@ -196,6 +196,7 @@ try {
                                 <?php foreach ($subbloques as $titulo => $ids):
                                     $suma = 0;
                                     $count = 0;
+                                    $max_bloque = count($ids) * $max_pregunta;
                                 ?>
                                 <h3><?php echo htmlspecialchars($titulo); ?></h3>
                                 <table class="table">
@@ -227,7 +228,7 @@ try {
                                     endforeach; ?>
                                     </tbody>
                                     <tfoot>
-                                        <tr style="font-weight:bold;"><td>Total bloque</td><td><?php echo $suma; ?></td><td></td></tr>
+                                        <tr style="font-weight:bold;"><td>Total bloque</td><td><?php echo $suma . ' / ' . $max_bloque; ?></td><td></td></tr>
                                     </tfoot>
                                 </table>
                                 <?php endforeach; ?>
