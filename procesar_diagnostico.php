@@ -7,6 +7,9 @@ function mostrarMensaje($mensaje, $tipo = 'success') {
 }
 
 try {
+    // Validar y formatear la fecha
+    $fecha_diagnostico = !empty($_POST['fecha_diagnostico']) ? $_POST['fecha_diagnostico'] : date('Y-m-d');
+    
     // Iniciar transacción
     $conn->beginTransaction();
 
@@ -19,7 +22,7 @@ try {
     ");
 
     $stmt->execute([
-        $_POST['fecha_diagnostico'],
+        $fecha_diagnostico,
         $_POST['nombre_cliente'],
         $_POST['industria'],
         $_POST['tamano_empresa'],
