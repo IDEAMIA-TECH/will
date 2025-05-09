@@ -15,6 +15,26 @@ function logDebug($message, $data = null) {
     error_log($log . "\n", 3, "debug.log");
 }
 
+// Log de los datos POST recibidos
+logDebug('POST recibido en procesar_diagnostico.php', $_POST);
+
+// Validar campos obligatorios
+$nombre_cliente = $_POST['nombre_cliente'] ?? null;
+$industria = $_POST['industria'] ?? null;
+$tamano_empresa = $_POST['tamano_empresa'] ?? null;
+$fecha_diagnostico = $_POST['fecha_diagnostico'] ?? null;
+
+if (!$nombre_cliente || !$industria || !$tamano_empresa || !$fecha_diagnostico) {
+    mostrarMensaje("Faltan datos obligatorios del diagnóstico. Por favor, completa todos los campos requeridos.", 'error');
+    logDebug('Faltan datos obligatorios', [
+        'nombre_cliente' => $nombre_cliente,
+        'industria' => $industria,
+        'tamano_empresa' => $tamano_empresa,
+        'fecha_diagnostico' => $fecha_diagnostico
+    ]);
+    exit;
+}
+
 try {
     // Validar y formatear la fecha
     $fecha_diagnostico = !empty($_POST['fecha_diagnostico']) ? $_POST['fecha_diagnostico'] : date('Y-m-d');
