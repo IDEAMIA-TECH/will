@@ -23,7 +23,7 @@ try {
         $_POST['nombre_cliente'],
         $_POST['industria'],
         $_POST['tamano_empresa'],
-        $_POST['observaciones_generales']
+        $_POST['observaciones_generales'] ?? null
     ]);
 
     $diagnostico_id = $conn->lastInsertId();
@@ -200,8 +200,8 @@ try {
                 $stmt->execute([
                     $diagnostico_id,
                     $accion,
-                    $_POST['responsables'][$index],
-                    $_POST['fechas'][$index],
+                    $_POST['responsables'][$index] ?? null,
+                    $_POST['fechas'][$index] ?? null,
                     'Pendiente'
                 ]);
             }
