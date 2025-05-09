@@ -134,62 +134,75 @@ try {
                     <div class="diagnostic-section">
                         <h2 class="section-title">Resultados por Sección</h2>
                         <?php
-                        $seccion_actual = '';
-                        $suma_seccion = 0;
-                        $total_respuestas_seccion = 0;
-                        foreach ($respuestas as $i => $respuesta):
-                            $nombre_seccion = $respuesta['seccion_nombre'] ?? 'Sin sección';
-                            $es_switch = (strpos($respuesta['pregunta_id'], 'M1S_') === 0);
-                            if ($seccion_actual != $nombre_seccion):
-                                if ($seccion_actual != '') {
-                                    // Mostrar total de la sección anterior
-                                    echo '<tr style="font-weight:bold;"><td colspan="2">Total sección</td><td>' . $suma_seccion . '</td><td></td></tr>';
-                                    echo '</table></div>';
-                                }
-                                $seccion_actual = $nombre_seccion;
-                                $suma_seccion = 0;
-                                $total_respuestas_seccion = 0;
-                        ?>
+                        // Agrupar respuestas por sección y bloque personalizado
+                        $bloques = [
+                            'PITS Comercial' => [
+                                'Dirección Comercial' => ['PITS_DIRCOM_1','PITS_DIRCOM_2','PITS_DIRCOM_3'],
+                                'Proceso de Gestión Comercial' => ['PITS_GESTION_1','PITS_GESTION_2','PITS_GESTION_3','PITS_GESTION_4'],
+                                'Sistema de Información' => ['PITS_INFO_1'],
+                                'Estrategias y Tácticas' => ['PITS_ESTRATEGIA_1'],
+                                'Métricas Comerciales' => ['PITS_METRICAS_1','PITS_METRICAS_2'],
+                            ],
+                            'PITS CALIDAD & PRODUCTIVIDAD' => [
+                                'Enfoque por Resultados' => ['PITS_RES_1','PITS_RES_2','PITS_RES_3','PITS_RES_4'],
+                                'Enfoque por Proceso' => ['PITS_PROC_1','PITS_PROC_2','PITS_PROC_3','PITS_PROC_4'],
+                                'Calidad y Mejora Continua' => ['PITS_CAL_1','PITS_CAL_2','PITS_CAL_3','PITS_CAL_4'],
+                                'Oportunidad de Mejora' => ['PITS_MEJ_1','PITS_MEJ_2'],
+                            ],
+                            'PITS MAXIMIZACIÓN DE CAPACIDADES' => [
+                                'Impacto del Capital Humano en la Productividad' => ['PITS_CAPITAL_1','PITS_CAPITAL_2','PITS_CAPITAL_3','PITS_CAPITAL_4'],
+                                'Inventario de Capacidades' => ['PITS_INVENTARIO_1','PITS_INVENTARIO_2','PITS_INVENTARIO_3','PITS_INVENTARIO_4'],
+                                'Maximización de Capacidades' => ['PITS_MAX_1','PITS_MAX_2','PITS_MAX_3'],
+                            ],
+                        ];
+                        // Indexar respuestas por pregunta_id
+                        $respuestas_idx = [];
+                        foreach ($respuestas as $r) {
+                            $respuestas_idx[$r['pregunta_id']] = $r;
+                        }
+                        foreach ($bloques as $seccion => $subbloques): ?>
                             <div class="section-results">
-                                <h3><?php echo htmlspecialchars($seccion_actual); ?></h3>
+                                <h2><?php echo htmlspecialchars($seccion); ?></h2>
+                                <?php foreach ($subbloques as $titulo => $ids):
+                                    $suma = 0;
+                                    $count = 0;
+                                ?>
+                                <h3><?php echo htmlspecialchars($titulo); ?></h3>
                                 <table class="table">
                                     <thead>
                                         <tr>
-                                            <th>ID Pregunta</th>
                                             <th>Pregunta</th>
                                             <th>Calificación</th>
                                             <th>Observaciones</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                        <?php endif; ?>
-                                        <tr<?php if($es_switch) echo ' style="background:#f5f5f5;"'; ?>>
-                                            <td><?php echo htmlspecialchars($respuesta['pregunta_id']); ?></td>
-                                            <td><?php echo htmlspecialchars($respuesta['texto_pregunta'] ?? '(Sin texto)'); ?></td>
-                                            <td>
-                                                <?php
-                                                if ($es_switch) {
-                                                    echo ($respuesta['calificacion'] == 1) ? 'Sí' : 'No';
-                                                } else {
-                                                    echo htmlspecialchars($respuesta['calificacion']);
-                                                }
-                                                ?>
-                                            </td>
-                                            <td><?php echo htmlspecialchars($respuesta['observaciones']); ?></td>
-                                        </tr>
-                        <?php 
-                            // Solo sumar si NO es switch
-                            if (!$es_switch) {
-                                $suma_seccion += (int)$respuesta['calificacion']; 
-                                $total_respuestas_seccion++;
-                            }
-                            // Si es la última respuesta o la siguiente es de otra sección, muestra el total
-                            $siguiente = $respuestas[$i+1]['seccion_nombre'] ?? null;
-                            if ($siguiente !== $seccion_actual) {
-                                echo '<tr style="font-weight:bold;"><td colspan="2">Total sección</td><td>' . $suma_seccion . '</td><td></td></tr>';
-                                echo '</tbody></table></div>';
-                            }
-                        endforeach; ?>
+                                    <?php foreach ($ids as $pid):
+                                        if (!isset($respuestas_idx[$pid])) continue;
+                                        $r = $respuestas_idx[$pid];
+                                        $texto = $r['texto_pregunta'] ?? $pid;
+                                        $calif = $r['calificacion'];
+                                        $obs = $r['observaciones'];
+                                        // Oportunidad de Mejora es texto abierto
+                                        if (strpos($pid, 'PITS_MEJ_') === 0) {
+                                            echo '<tr><td colspan="3"><strong>' . htmlspecialchars($texto) . ':</strong><br>' . nl2br(htmlspecialchars($obs)) . '</td></tr>';
+                                            continue;
+                                        }
+                                        echo '<tr>';
+                                        echo '<td>' . htmlspecialchars($texto) . '</td>';
+                                        echo '<td>' . ($calif !== null ? htmlspecialchars($calif) : '-') . '</td>';
+                                        echo '<td>' . htmlspecialchars($obs) . '</td>';
+                                        echo '</tr>';
+                                        if ($calif !== null && $calif !== '') { $suma += (int)$calif; $count++; }
+                                    endforeach; ?>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr style="font-weight:bold;"><td>Total bloque</td><td><?php echo $suma; ?></td><td></td></tr>
+                                    </tfoot>
+                                </table>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endforeach; ?>
                     </div>
 
                     <!-- Respuestas crudas para depuración -->
