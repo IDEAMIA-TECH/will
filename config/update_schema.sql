@@ -10,6 +10,8 @@ DROP INDEX idx_respuestas_pregunta ON respuestas;
 -- Creamos un nuevo índice para la columna VARCHAR
 CREATE INDEX idx_respuestas_pregunta ON respuestas(pregunta_id);
 
--- Modificamos la restricción de calificacion para permitir valores 0 y 1
+-- Eliminamos la restricción existente de calificacion
 ALTER TABLE respuestas DROP CONSTRAINT IF EXISTS respuestas_chk_1;
+
+-- Agregamos la nueva restricción que permite valores 0 y 1
 ALTER TABLE respuestas ADD CONSTRAINT respuestas_chk_1 CHECK (calificacion BETWEEN 0 AND 5); 
