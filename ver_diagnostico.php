@@ -160,6 +160,75 @@ try {
                         </div>
                     </div>
 
+                    <!-- Momento Empresarial y Aspectos Adicionales -->
+                    <div class="diagnostic-section">
+                        <h2 class="section-title">Momento Empresarial</h2>
+                        <table class="table">
+                            <thead>
+                                <tr><th>Pregunta</th><th>Respuesta</th></tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                // Mostrar preguntas M1_1 a M1_9
+                                for ($i = 1; $i <= 9; $i++) {
+                                    $pid = 'M1_' . $i;
+                                    if (isset($respuestas_idx[$pid])) {
+                                        $texto = $respuestas_idx[$pid]['texto_pregunta'] ?? $pid;
+                                        $valor = $respuestas_idx[$pid]['calificacion'];
+                                        $resp = ($valor == 1) ? 'Sí' : (($valor == 0) ? 'No' : $valor);
+                                        echo '<tr><td>' . htmlspecialchars($texto) . '</td><td>' . htmlspecialchars($resp) . '</td></tr>';
+                                    }
+                                }
+                                ?>
+                            </tbody>
+                        </table>
+                        <h3 class="subsection-title">Aspectos Adicionales</h3>
+                        <table class="table">
+                            <thead>
+                                <tr><th>Pregunta</th><th>Respuesta</th></tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                // Mostrar switches M1S_1 a M1S_10
+                                for ($i = 1; $i <= 10; $i++) {
+                                    $pid = 'M1S_' . $i;
+                                    if (isset($respuestas_idx[$pid])) {
+                                        $texto = $respuestas_idx[$pid]['texto_pregunta'] ?? $pid;
+                                        $valor = $respuestas_idx[$pid]['calificacion'];
+                                        $resp = ($valor == 1) ? 'Sí' : 'No';
+                                        echo '<tr><td>' . htmlspecialchars($texto) . '</td><td>' . htmlspecialchars($resp) . '</td></tr>';
+                                    }
+                                }
+                                ?>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- PITS CALIDAD & PRODUCTIVIDAD (con tipo de proceso) -->
+                    <div class="diagnostic-section">
+                        <h2 class="section-title">PITS CALIDAD & PRODUCTIVIDAD</h2>
+                        <?php
+                        // Mostrar tipo de proceso
+                        $pid_tipo = 'PITS_TIPO';
+                        if (isset($respuestas_idx[$pid_tipo])) {
+                            $texto = $respuestas_idx[$pid_tipo]['texto_pregunta'] ?? 'SELECCIONE EL TIPO DE PROCESO QUE LÍDERA:';
+                            $valor = $respuestas_idx[$pid_tipo]['calificacion'];
+                            $map = [
+                                'Estratégico' => 'Estratégico',
+                                'Operativo' => 'Operativo',
+                                'Calidad y Productividad' => 'Calidad y Productividad',
+                                'Soporte' => 'Soporte',
+                                1 => 'Estratégico', 2 => 'Operativo', 3 => 'Calidad y Productividad', 4 => 'Soporte'
+                            ];
+                            $resp = $valor;
+                            // Si se guardó como texto, mostrarlo; si es numérico, mapear
+                            if (isset($map[$valor])) $resp = $map[$valor];
+                            echo '<div class="form-group"><div class="form-label"><strong>' . htmlspecialchars($texto) . '</strong></div><div class="form-input">' . htmlspecialchars($resp) . '</div></div>';
+                        }
+                        ?>
+                        <!-- Aquí sigue el resto del bloque PITS CALIDAD & PRODUCTIVIDAD como antes -->
+                    </div>
+
                     <!-- Resultados por Sección -->
                     <div class="diagnostic-section">
                         <h2 class="section-title">Resultados por Sección</h2>
