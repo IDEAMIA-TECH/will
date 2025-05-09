@@ -68,12 +68,11 @@ require_once 'database.php';
                         "CREATE TABLE IF NOT EXISTS respuestas (
                             id INT AUTO_INCREMENT PRIMARY KEY,
                             diagnostico_id INT,
-                            pregunta_id INT,
+                            pregunta_id VARCHAR(10),
                             calificacion INT CHECK (calificacion BETWEEN 1 AND 5),
                             observaciones TEXT,
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                            FOREIGN KEY (diagnostico_id) REFERENCES diagnosticos(id),
-                            FOREIGN KEY (pregunta_id) REFERENCES preguntas(id)
+                            FOREIGN KEY (diagnostico_id) REFERENCES diagnosticos(id)
                         )",
                         
                         // Tabla recomendaciones
