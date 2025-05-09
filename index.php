@@ -340,6 +340,52 @@ $fecha_hoy = date('Y-m-d');
                 flex-wrap: wrap;
             }
         }
+
+        .mensaje-gracias {
+            max-width: 480px;
+            margin: 5rem auto 0 auto;
+            background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%);
+            border-radius: 18px;
+            box-shadow: 0 6px 32px rgba(0,0,0,0.10);
+            padding: 3rem 2rem 2.5rem 2rem;
+            text-align: center;
+            border: 2px solid #00bcd4;
+            animation: fadeInUp 0.7s cubic-bezier(.39,.575,.56,1.000);
+        }
+        .icono-check {
+            font-size: 4rem;
+            color: #00bfae;
+            background: #e0f2f1;
+            border-radius: 50%;
+            width: 90px;
+            height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem auto;
+            box-shadow: 0 2px 12px rgba(0,191,174,0.10);
+        }
+        .mensaje-gracias h2 {
+            color: #00796b;
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        .mensaje-gracias p {
+            color: #006064;
+            font-size: 1.2rem;
+            margin-bottom: 0;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @media (max-width: 600px) {
+            .mensaje-gracias { padding: 2rem 0.5rem; }
+            .icono-check { font-size: 2.5rem; width: 60px; height: 60px; }
+            .mensaje-gracias h2 { font-size: 1.3rem; }
+            .mensaje-gracias p { font-size: 1rem; }
+        }
     </style>
 </head>
 <body>
@@ -994,9 +1040,13 @@ $fecha_hoy = date('Y-m-d');
             </div>
         </div>
     </div>
-    <div id="mensajeCompletado" style="display:none; text-align:center; padding:2rem;">
-        <h2>Diagnóstico completado</h2>
-        <p>¡Gracias! Un especialista se pondrá en contacto con usted pronto.</p>
+    <!-- Mensaje de completado fuera de la card -->
+    <div id="mensajeCompletado" style="display:none;">
+        <div class="mensaje-gracias">
+            <div class="icono-check">&#10004;</div>
+            <h2>¡Diagnóstico completado!</h2>
+            <p>Gracias por completar el diagnóstico.<br>Un especialista se pondrá en contacto con usted pronto.</p>
+        </div>
     </div>
 
     <script>
@@ -1057,7 +1107,9 @@ $fecha_hoy = date('Y-m-d');
         .then(response => response.text())
         .then(data => {
             if (data.trim() === 'OK') {
-                form.style.display = 'none';
+                // Ocultar la card completa
+                document.querySelector('.card.fade-in').style.display = 'none';
+                // Mostrar el mensaje de completado
                 document.getElementById('mensajeCompletado').style.display = 'block';
             } else {
                 alert('Ocurrió un error al guardar el diagnóstico. Intente de nuevo.');
