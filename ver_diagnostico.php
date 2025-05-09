@@ -22,10 +22,10 @@ try {
     $stmt = $conn->prepare("
         SELECT r.*, p.texto_pregunta, s.nombre as seccion_nombre
         FROM respuestas r
-        JOIN preguntas p ON r.pregunta_id = p.id
-        JOIN secciones s ON p.seccion_id = s.id
+        LEFT JOIN preguntas p ON r.pregunta_id = p.id
+        LEFT JOIN secciones s ON p.seccion_id = s.id
         WHERE r.diagnostico_id = ?
-        ORDER BY s.id, p.orden
+        ORDER BY s.id, p.orden, r.pregunta_id
     ");
     $stmt->execute([$diagnostico_id]);
     $respuestas = $stmt->fetchAll();
@@ -104,15 +104,17 @@ try {
                         <?php
                         $seccion_actual = '';
                         foreach ($respuestas as $respuesta):
-                            if ($seccion_actual != $respuesta['seccion_nombre']):
+                            $nombre_seccion = $respuesta['seccion_nombre'] ?? 'Sin sección';
+                            if ($seccion_actual != $nombre_seccion):
                                 if ($seccion_actual != '') echo '</table></div>';
-                                $seccion_actual = $respuesta['seccion_nombre'];
+                                $seccion_actual = $nombre_seccion;
                         ?>
                             <div class="section-results">
                                 <h3><?php echo htmlspecialchars($seccion_actual); ?></h3>
                                 <table class="table">
                                     <thead>
                                         <tr>
+                                            <th>ID Pregunta</th>
                                             <th>Pregunta</th>
                                             <th>Calificación</th>
                                             <th>Observaciones</th>
@@ -121,14 +123,46 @@ try {
                                     <tbody>
                         <?php endif; ?>
                                         <tr>
-                                            <td><?php echo htmlspecialchars($respuesta['texto_pregunta']); ?></td>
-                                            <td><?php echo htmlspecialchars($respuesta['calificacion']); ?>/5</td>
+                                            <td><?php echo htmlspecialchars($respuesta['pregunta_id']); ?></td>
+                                            <td><?php echo htmlspecialchars($respuesta['texto_pregunta'] ?? '(Sin texto)'); ?></td>
+                                            <td><?php echo htmlspecialchars($respuesta['calificacion']); ?></td>
                                             <td><?php echo htmlspecialchars($respuesta['observaciones']); ?></td>
                                         </tr>
                         <?php endforeach; ?>
                                     </tbody>
                                 </table>
                             </div>
+                    </div>
+
+                    <!-- Respuestas crudas para depuración -->
+                    <div class="diagnostic-section">
+                        <h2 class="section-title">Respuestas crudas (debug)</h2>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Diagnóstico</th>
+                                        <th>ID Pregunta</th>
+                                        <th>Calificación</th>
+                                        <th>Observaciones</th>
+                                        <th>Fecha</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($respuestas as $r): ?>
+                                    <tr>
+                                        <td><?php echo htmlspecialchars($r['id']); ?></td>
+                                        <td><?php echo htmlspecialchars($r['diagnostico_id']); ?></td>
+                                        <td><?php echo htmlspecialchars($r['pregunta_id']); ?></td>
+                                        <td><?php echo htmlspecialchars($r['calificacion']); ?></td>
+                                        <td><?php echo htmlspecialchars($r['observaciones']); ?></td>
+                                        <td><?php echo htmlspecialchars($r['created_at']); ?></td>
+                                    </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
 
                     <!-- Recomendaciones -->

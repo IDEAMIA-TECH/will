@@ -78,6 +78,7 @@ try {
         $key = 'momento_' . $i;
         if (isset($_POST[$key])) {
             $valor = (int)$_POST[$key];
+            if ($valor < 0 || $valor > 5) $valor = max(0, min(5, $valor));
             logDebug("Procesando momento empresarial", [
                 'pregunta' => $key,
                 'valor' => $valor,
@@ -103,6 +104,7 @@ try {
     for ($i = 1; $i <= 10; $i++) {
         $key = 'momento_switch_' . $i;
         $valor = isset($_POST[$key]) ? 1 : 0;
+        if ($valor < 0 || $valor > 5) $valor = max(0, min(5, $valor));
         logDebug("Procesando switch momento empresarial", [
             'pregunta' => $key,
             'valor' => $valor,
@@ -128,6 +130,7 @@ try {
         $key = 'area_accion_' . $i;
         if (isset($_POST[$key])) {
             $valor = (int)$_POST[$key];
+            if ($valor < 0 || $valor > 5) $valor = max(0, min(5, $valor));
             $comentario = $_POST['comentario_area_accion_' . $i] ?? null;
             logDebug("Procesando área de acción", [
                 'pregunta' => $key,
@@ -155,6 +158,7 @@ try {
         $key = 'pits_' . $i;
         if (isset($_POST[$key])) {
             $valor = (int)$_POST[$key];
+            if ($valor < 0 || $valor > 5) $valor = max(0, min(5, $valor));
             $comentario = $_POST['comentario_pits_' . $i] ?? null;
             logDebug("Procesando PITS calidad", [
                 'pregunta' => $key,
@@ -182,6 +186,7 @@ try {
         $key = 'pits_max_' . $i;
         if (isset($_POST[$key])) {
             $valor = (int)$_POST[$key];
+            if ($valor < 0 || $valor > 5) $valor = max(0, min(5, $valor));
             logDebug("Procesando PITS maximización", [
                 'pregunta' => $key,
                 'valor' => $valor,
@@ -209,18 +214,20 @@ try {
         if (strpos($key, 'calificacion_') === 0) {
             $pregunta_id = substr($key, 12);
             $observacion_key = 'observacion_' . $pregunta_id;
+            $valor = (int)$value;
+            if ($valor < 0 || $valor > 5) $valor = max(0, min(5, $valor));
             logDebug("Procesando respuesta normal", [
                 'pregunta' => $key,
-                'valor' => $value,
+                'valor' => $valor,
                 'pregunta_id' => $pregunta_id
             ]);
             $stmt->execute([
                 $diagnostico_id,
                 $pregunta_id,
-                $value,
+                $valor,
                 $_POST[$observacion_key] ?? null
             ]);
-            $puntuacion_total += (int)$value;
+            $puntuacion_total += $valor;
             $total_preguntas++;
         }
     }
