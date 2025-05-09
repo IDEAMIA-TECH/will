@@ -994,6 +994,10 @@ $fecha_hoy = date('Y-m-d');
             </div>
         </div>
     </div>
+    <div id="mensajeCompletado" style="display:none; text-align:center; padding:2rem;">
+        <h2>Diagnóstico completado</h2>
+        <p>¡Gracias! Un especialista se pondrá en contacto con usted pronto.</p>
+    </div>
 
     <script>
     // Wizard logic
@@ -1039,6 +1043,29 @@ $fecha_hoy = date('Y-m-d');
         window.steps = document.querySelectorAll('.wizard-step');
         window.totalSteps = steps.length;
         showStep(0);
+    });
+
+    // Envío por AJAX
+    const form = document.getElementById('diagnosticoForm');
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(form);
+        fetch('procesar_diagnostico.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.text())
+        .then(data => {
+            if (data.trim() === 'OK') {
+                form.style.display = 'none';
+                document.getElementById('mensajeCompletado').style.display = 'block';
+            } else {
+                alert('Ocurrió un error al guardar el diagnóstico. Intente de nuevo.');
+            }
+        })
+        .catch(() => {
+            alert('Ocurrió un error de red. Intente de nuevo.');
+        });
     });
     </script>
 </body>

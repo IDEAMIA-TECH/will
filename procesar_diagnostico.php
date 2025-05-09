@@ -461,8 +461,8 @@ try {
     $conn->commit();
     logDebug("Transacción completada exitosamente");
 
-    // Redirigir a la página de éxito
-    header("Location: ver_diagnostico.php?id=" . $diagnostico_id);
+    // Responder para AJAX
+    echo 'OK';
     exit;
 
 } catch (PDOException $e) {
@@ -472,6 +472,9 @@ try {
         'error' => $e->getMessage(),
         'code' => $e->getCode()
     ]);
-    mostrarMensaje("Error al procesar el diagnóstico: " . $e->getMessage(), 'error');
+    // Responder error plano para AJAX
+    http_response_code(500);
+    echo 'Error al procesar el diagnóstico: ' . $e->getMessage();
+    exit;
 }
 ?> 
