@@ -214,15 +214,20 @@ try {
                             $texto = $respuestas_idx[$pid_tipo]['texto_pregunta'] ?? 'SELECCIONE EL TIPO DE PROCESO QUE LÍDERA:';
                             $valor = $respuestas_idx[$pid_tipo]['calificacion'];
                             $map = [
+                                1 => 'Estratégico',
+                                2 => 'Operativo',
+                                3 => 'Calidad y Productividad',
+                                4 => 'Soporte',
+                                '1' => 'Estratégico',
+                                '2' => 'Operativo',
+                                '3' => 'Calidad y Productividad',
+                                '4' => 'Soporte',
                                 'Estratégico' => 'Estratégico',
                                 'Operativo' => 'Operativo',
                                 'Calidad y Productividad' => 'Calidad y Productividad',
-                                'Soporte' => 'Soporte',
-                                1 => 'Estratégico', 2 => 'Operativo', 3 => 'Calidad y Productividad', 4 => 'Soporte'
+                                'Soporte' => 'Soporte'
                             ];
-                            $resp = $valor;
-                            // Si se guardó como texto, mostrarlo; si es numérico, mapear
-                            if (isset($map[$valor])) $resp = $map[$valor];
+                            $resp = isset($map[$valor]) ? $map[$valor] : $valor;
                             echo '<div class="form-group"><div class="form-label"><strong>' . htmlspecialchars($texto) . '</strong></div><div class="form-input">' . htmlspecialchars($resp) . '</div></div>';
                         }
                         ?>
@@ -285,14 +290,20 @@ try {
                                             $texto = $respuestas_idx[$pid_tipo]['texto_pregunta'] ?? 'SELECCIONE EL TIPO DE PROCESO QUE LÍDERA:';
                                             $valor = $respuestas_idx[$pid_tipo]['calificacion'];
                                             $map = [
+                                                1 => 'Estratégico',
+                                                2 => 'Operativo',
+                                                3 => 'Calidad y Productividad',
+                                                4 => 'Soporte',
+                                                '1' => 'Estratégico',
+                                                '2' => 'Operativo',
+                                                '3' => 'Calidad y Productividad',
+                                                '4' => 'Soporte',
                                                 'Estratégico' => 'Estratégico',
                                                 'Operativo' => 'Operativo',
                                                 'Calidad y Productividad' => 'Calidad y Productividad',
-                                                'Soporte' => 'Soporte',
-                                                1 => 'Estratégico', 2 => 'Operativo', 3 => 'Calidad y Productividad', 4 => 'Soporte'
+                                                'Soporte' => 'Soporte'
                                             ];
-                                            $resp = $valor;
-                                            if (isset($map[$valor])) $resp = $map[$valor];
+                                            $resp = isset($map[$valor]) ? $map[$valor] : $valor;
                                             echo '<div class="form-group"><div class="form-label"><strong>' . htmlspecialchars($texto) . '</strong></div><div class="form-input">' . htmlspecialchars($resp) . '</div></div>';
                                         }
                                     }

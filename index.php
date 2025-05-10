@@ -806,10 +806,10 @@ $fecha_hoy = date('Y-m-d');
                                     <label><strong>SELECCIONE EL TIPO DE PROCESO QUE LÍDERA:</strong></label><br>
                                 </div>
                                 <div class="form-input">
-                                    <label class="rating-label"><input type="radio" name="tipo_proceso" value="Estratégico" required> Estratégico</label>
-                                    <label class="rating-label"><input type="radio" name="tipo_proceso" value="Operativo"> Operativo</label>
-                                    <label class="rating-label"><input type="radio" name="tipo_proceso" value="Calidad y Productividad"> Calidad y Productividad</label>
-                                    <label class="rating-label"><input type="radio" name="tipo_proceso" value="Soporte"> Soporte</label>
+                                    <label class="rating-label"><input type="radio" name="tipo_proceso" value="1" required> Estratégico</label>
+                                    <label class="rating-label"><input type="radio" name="tipo_proceso" value="2"> Operativo</label>
+                                    <label class="rating-label"><input type="radio" name="tipo_proceso" value="3"> Calidad y Productividad</label>
+                                    <label class="rating-label"><input type="radio" name="tipo_proceso" value="4"> Soporte</label>
                                 </div>
                             </div>
 
