@@ -401,6 +401,22 @@ try {
         }
     }
 
+    // Procesar PITS CALIDAD & PRODUCTIVIDAD - Tipo de Proceso
+    if (isset($_POST['tipo_proceso'])) {
+        $valor = $_POST['tipo_proceso'];
+        $stmt = $conn->prepare("
+            INSERT INTO respuestas (
+                diagnostico_id, pregunta_id, calificacion, observaciones
+            ) VALUES (?, ?, ?, ?)
+        ");
+        $stmt->execute([
+            $diagnostico_id,
+            'PITS_TIPO',
+            $valor,
+            null
+        ]);
+    }
+
     // Calcular porcentaje de implementación
     $porcentaje = $total_preguntas > 0 ? ($puntuacion_total / ($total_preguntas * 1)) * 100 : 0;
     logDebug("Cálculo de puntuación", [
